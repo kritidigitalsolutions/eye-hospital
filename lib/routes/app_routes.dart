@@ -5,6 +5,7 @@ abstract class AppRoutes {
   static const loginPage = "/loginPage";
   static const otpPage = "/otpPage";
   static const registerPage = "/registerPage";
+  static const userImage = "/userImage";
 
   // Home
 
@@ -29,4 +30,6 @@ abstract class AppRoutes {
   static const supportPage = "/supportPage";
   static const likeProduct = "/likeProduct";
   static const myCart = "/myCart";
+  static const myProfile = "/myProfile";
+  static const editProfile = "/editProfile";
 }

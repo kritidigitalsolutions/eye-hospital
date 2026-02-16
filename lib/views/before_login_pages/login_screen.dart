@@ -35,7 +35,7 @@ class LoginScreen extends StatelessWidget {
                     Text(
                       "Enter Mobile\nNumber",
                       textAlign: TextAlign.center,
-                      style: text24(fontWeight: FontWeight.w400),
+                      style: text24(fontWeight: FontWeight.w600),
                     ),
 
                     const SizedBox(height: 20),
@@ -53,7 +53,13 @@ class LoginScreen extends StatelessWidget {
                               AppDimensions.radiusSmall,
                             ),
                           ),
-                          child: const Text("+91"),
+                          child: Text(
+                            "+91",
+                            style: text16(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 10),
 
@@ -107,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         label: Text(
                           "Login with Google",
-                          style: text16(
+                          style: text14(
                             fontWeight: FontWeight.w600,
                             color: AppColors.buttonText,
                           ),

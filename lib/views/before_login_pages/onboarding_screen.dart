@@ -24,7 +24,7 @@ class OnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: TextButton(
                   onPressed: controller.skip,
-                  child: const Text("Skip"),
+                  child: Text("Skip", style: text14()),
                 ),
               ),
             ),

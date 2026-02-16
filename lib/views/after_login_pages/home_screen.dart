@@ -3,6 +3,7 @@ import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
+import 'package:eye_hospital/utils/custom_dialogbox.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
@@ -30,7 +31,7 @@ class HomeScreen extends StatelessWidget {
           "Hello\nAmit kumar",
           style: text16(fontWeight: FontWeight.w600),
         ),
-        actions: [menuIconButton(), SizedBox(width: 12)],
+        actions: [menuIconButton(context), SizedBox(width: 12)],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -76,7 +77,7 @@ class HomeScreen extends StatelessWidget {
             /// Our Top Doctors
             sectionTitle("Our Top Doctors"),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 15),
 
             SizedBox(
               height: 140,
@@ -88,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             customOutlineButton(
               text: "Explore More",
@@ -97,12 +98,12 @@ class HomeScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
 
             /// Most Used Spectacles
             sectionTitle("Most Used Spectacles"),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 15),
 
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -115,7 +116,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             customOutlineButton(
               text: "Explore More",
@@ -127,12 +128,12 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             Image.asset(AppImages.logo),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             /// Our Vision
             Text("Our Vision", style: text18(color: AppColors.greenGr2)),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
 
             Text(
               "is to simplify eye care through technology, connecting patients with trusted specialists and services anytime, anywhere",
@@ -371,7 +372,7 @@ class ShopCard extends StatelessWidget {
   }
 }
 
-Widget menuIconButton() {
+Widget menuIconButton(BuildContext context) {
   return PopupMenuButton<String>(
     onSelected: (value) {
       if (value == "appointment") {
@@ -382,34 +383,88 @@ Widget menuIconButton() {
         Get.toNamed(AppRoutes.likeProduct);
       } else if (value == "track") {
         Get.toNamed(AppRoutes.traceOrder);
-      } else {
+      } else if (value == "profile") {
+        Get.toNamed(AppRoutes.myProfile);
+      } else if (value == "support") {
         Get.toNamed(AppRoutes.supportPage);
+      } else if (value == "logout") {
+        showConfirmDialog(context);
       }
     },
     color: AppColors.white,
     itemBuilder: (context) => [
       PopupMenuItem(
+        value: "profile",
+        child: Row(
+          children: [
+            const Icon(Icons.person_outline, size: 18),
+            const SizedBox(width: 8),
+            Text("My Profile", style: text14()),
+          ],
+        ),
+      ),
+      PopupMenuItem(
         value: "appointment",
-        child: Text("My Appointment", style: text14()),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_today_outlined, size: 18),
+            const SizedBox(width: 8),
+            Text("My Appointment", style: text14()),
+          ],
+        ),
       ),
       PopupMenuItem(
         value: "carts",
-        child: Text("My Carts", style: text14()),
+        child: Row(
+          children: [
+            const Icon(Icons.shopping_cart_checkout_outlined, size: 18),
+            const SizedBox(width: 8),
+            Text("My Carts", style: text14()),
+          ],
+        ),
       ),
       PopupMenuItem(
         value: "liked",
-        child: Text("Liked Products", style: text14()),
+        child: Row(
+          children: [
+            const Icon(Icons.favorite_outline, size: 18),
+            const SizedBox(width: 8),
+            Text("Liked Products", style: text14()),
+          ],
+        ),
       ),
       PopupMenuItem(
         value: "track",
-        child: Text("Track my order", style: text14()),
+        child: Row(
+          children: [
+            const Icon(Icons.local_shipping_outlined, size: 18),
+            const SizedBox(width: 8),
+            Text("Track my order", style: text14()),
+          ],
+        ),
       ),
       PopupMenuItem(
         value: "support",
-        child: Text("Support", style: text14()),
+        child: Row(
+          children: [
+            const Icon(Icons.support_agent, size: 18),
+            const SizedBox(width: 8),
+            Text("Support", style: text14()),
+          ],
+        ),
+      ),
+      PopupMenuItem(
+        value: "logout",
+        child: Row(
+          children: [
+            const Icon(Icons.logout, size: 18, color: Colors.red),
+            const SizedBox(width: 8),
+            Text("LogOut", style: text14(color: Colors.red)),
+          ],
+        ),
       ),
     ],
-    child: Icon(Icons.menu, size: 25),
+    child: const Icon(Icons.menu, size: 25),
   );
 }
 

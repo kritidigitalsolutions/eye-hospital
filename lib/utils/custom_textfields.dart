@@ -138,7 +138,7 @@ class CustomTextFieldWithBorder extends StatelessWidget {
     this.readOnly = false,
     this.isNumberOnly = false,
     this.filledColor = AppColors.white,
-    this.borderRadius = AppDimensions.radiusSmall,
+    this.borderRadius = AppDimensions.radiusMedium,
     this.maxLength,
     this.onTap,
     this.prefixIcon,

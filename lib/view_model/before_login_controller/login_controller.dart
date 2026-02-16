@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginController extends GetxController {
   final phoneController = TextEditingController();
@@ -65,8 +69,7 @@ class RegisterController extends GetxController {
 
     if (formKey.currentState!.validate() && genderError.value.isEmpty) {
       print("login successfully");
-      CustomSnakebar.success("Success", "Form Submitted");
-      Get.toNamed(AppRoutes.homeScreen);
+      Get.toNamed(AppRoutes.userImage);
     }
   }
 
@@ -75,5 +78,28 @@ class RegisterController extends GetxController {
     nameController.dispose();
     dobController.dispose();
     super.onClose();
+  }
+
+  // image select
+
+  Rx<File?> profileImage = Rx<File?>(null);
+
+  final ImagePicker picker = ImagePicker();
+
+  Future<void> pickImage(ImageSource source) async {
+    Permission permission = source == ImageSource.camera
+        ? Permission.camera
+        : Permission.photos;
+
+    var status = await permission.request();
+
+    if (status.isGranted) {
+      final XFile? image = await picker.pickImage(source: source);
+      if (image != null) {
+        profileImage.value = File(image.path);
+      }
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
   }
 }

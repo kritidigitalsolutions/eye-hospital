@@ -2,6 +2,7 @@ import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
+import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/before_login_controller/otp_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,14 +28,15 @@ class OtpScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   "Verify Your Code",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: text24(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   "Enter the 4-digit code we just\nsent to your number",
                   textAlign: TextAlign.center,
+                  style: text14(),
                 ),
 
                 const SizedBox(height: 24),

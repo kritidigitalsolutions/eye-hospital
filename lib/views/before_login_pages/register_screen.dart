@@ -2,6 +2,7 @@ import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
+import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/before_login_controller/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,13 +32,10 @@ class RegisterScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
+                      Text(
                         "Basic\nDetails",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: text24(fontWeight: FontWeight.bold),
                       ),
 
                       const SizedBox(height: 24),
@@ -89,10 +87,13 @@ class RegisterScreen extends StatelessWidget {
                             const SizedBox(height: 8),
 
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 genderButton("Male"),
-                                const SizedBox(width: 12),
+                                SizedBox(width: 6),
                                 genderButton("Female"),
+                                SizedBox(width: 6),
+                                genderButton("Other"),
                               ],
                             ),
 
@@ -154,7 +155,7 @@ class RegisterScreen extends StatelessWidget {
                   : AppColors.grey,
             ),
           ),
-          child: Text(text, style: TextStyle(color: Colors.black)),
+          child: Text(text, style: text14(color: AppColors.textPrimary)),
         ),
       ),
     );

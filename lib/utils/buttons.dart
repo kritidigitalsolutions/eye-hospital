@@ -193,7 +193,7 @@ class CustomElevatedIconButton extends StatelessWidget {
     this.textColor = AppColors.white,
     this.borderRadius = AppDimensions.radiusExtraLarge,
     this.iconSize = 18,
-    this.padding = const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    this.padding = const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
   });
 
   @override
@@ -215,4 +215,11 @@ class CustomElevatedIconButton extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget textButton(String text, VoidCallback onTap) {
+  return TextButton(
+    onPressed: onTap,
+    child: Text(text, style: text13(fontWeight: FontWeight.w600)),
+  );
 }

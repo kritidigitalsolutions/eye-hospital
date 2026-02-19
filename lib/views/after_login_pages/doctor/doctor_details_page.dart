@@ -80,37 +80,31 @@ class DoctorProfilePage extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // About Doctor
-                    const Text(
+                    Text(
                       "About Doctor",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
+                      style: text14(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       "Dr. Pankaj Tripathi is an experienced eye specialist "
                       "providing comprehensive diagnosis and treatment "
                       "for various eye conditions with a patient-first approach.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: text11(),
                     ),
 
                     const SizedBox(height: 12),
 
                     // Qualifications
-                    const Text(
+                    Text(
                       "Qualifications & Experience",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
+                      style: text14(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       "MBBS\nMS (Opthalmology)",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: text11(),
                     ),
 
                     const SizedBox(height: 12),
@@ -186,7 +180,7 @@ class DoctorProfilePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: Text(title, style: const TextStyle(fontSize: 12))),
+          Expanded(child: Text(title, style: text12())),
           SizedBox(width: 8),
           Text(
             "|",
@@ -194,21 +188,13 @@ class DoctorProfilePage extends StatelessWidget {
           ),
           SizedBox(width: 8),
           Expanded(
-            child: Text(
-              textAlign: TextAlign.center,
-              price,
-              style: const TextStyle(fontSize: 12),
-            ),
+            child: Text(textAlign: TextAlign.center, price, style: text12()),
           ),
           SizedBox(width: 8),
           Text("|"),
           SizedBox(width: 8),
           Expanded(
-            child: Text(
-              time,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 11),
-            ),
+            child: Text(time, textAlign: TextAlign.center, style: text11()),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
+import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 
 class VideoCallPage extends StatelessWidget {
@@ -96,10 +97,7 @@ class VideoCallPage extends StatelessWidget {
               color: Colors.yellow.shade400,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              name,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-            ),
+            child: Text(name, style: text12(fontWeight: FontWeight.w600)),
           ),
         ),
       ],
@@ -111,11 +109,11 @@ class VideoCallPage extends StatelessWidget {
       height: 44,
       width: 44,
       decoration: BoxDecoration(
-        color: Colors.yellow.shade400,
+        color: AppColors.primary,
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(icon, color: Colors.black),
+        icon: Icon(icon, color: AppColors.black),
         onPressed: () {},
       ),
     );

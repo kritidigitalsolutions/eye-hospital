@@ -157,14 +157,14 @@ void showImagePickerSheet(EditProfileController ctr) {
     Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Wrap(
         children: [
           ListTile(
             leading: const Icon(Icons.camera_alt),
-            title: const Text("Camera"),
+            title: Text("Camera", style: text15(fontWeight: FontWeight.bold)),
             onTap: () {
               Get.back();
               ctr.pickImageWithPermission(ImageSource.camera);
@@ -172,7 +172,7 @@ void showImagePickerSheet(EditProfileController ctr) {
           ),
           ListTile(
             leading: const Icon(Icons.photo),
-            title: const Text("Gallery"),
+            title: Text("Gallery", style: text15(fontWeight: FontWeight.bold)),
             onTap: () {
               Get.back();
               ctr.pickImageWithPermission(ImageSource.gallery);

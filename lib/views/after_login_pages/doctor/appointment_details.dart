@@ -1,11 +1,9 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
-import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AppointmentDetailPage extends StatelessWidget {
   const AppointmentDetailPage({super.key});
@@ -68,15 +66,14 @@ class AppointmentDetailPage extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // Join Button
-                    CustomElevatedIconButton(
-                      title: "Join Video Call",
-                      icon: Icons.video_call,
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.videoCall);
-                      },
-                    ),
-
-                    const SizedBox(height: 12),
+                    // CustomElevatedIconButton(
+                    //   title: "Join Video Call",
+                    //   icon: Icons.video_call,
+                    //   onPressed: () {
+                    //     Get.toNamed(AppRoutes.videoCall);
+                    //   },
+                    // ),
+                    //const SizedBox(height: 12),
 
                     // Reschedule Button
                     customOutlineButton(text: "Reschedle", onPressed: () {}),

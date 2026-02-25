@@ -23,9 +23,14 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: const Padding(
+        leading: Padding(
           padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(backgroundImage: AssetImage(AppImages.doctor)),
+          child: GestureDetector(
+            onTap: () {
+              Get.toNamed(AppRoutes.myProfile);
+            },
+            child: CircleAvatar(backgroundImage: AssetImage(AppImages.doctor)),
+          ),
         ),
         title: Text(
           "Hello\nAmit kumar",
@@ -623,6 +628,25 @@ class VideoConsultationCard extends StatelessWidget {
               style: text18(
                 fontWeight: FontWeight.bold,
                 color: AppColors.white,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.black.withAlpha(150),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                "Coming Soon",
+                style: text10(
+                  color: AppColors.white,
+
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

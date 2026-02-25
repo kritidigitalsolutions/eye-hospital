@@ -15,16 +15,14 @@ class LoginController extends GetxController {
   var isLoading = false.obs;
 
   void submit() {
-    if (formKey.currentState!.validate()) {
-      isLoading.value = true;
+    isLoading.value = true;
 
-      Future.delayed(const Duration(seconds: 2), () {
-        isLoading.value = false;
-        CustomSnakebar.success("Success", "OTP Sent Successfully");
-      });
+    Future.delayed(const Duration(seconds: 2), () {
+      isLoading.value = false;
+      CustomSnakebar.success("Success", "OTP Sent Successfully");
+    });
 
-      Get.toNamed(AppRoutes.otpPage);
-    }
+    Get.toNamed(AppRoutes.otpPage);
   }
 
   @override

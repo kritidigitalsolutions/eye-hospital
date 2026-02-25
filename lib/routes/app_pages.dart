@@ -5,7 +5,6 @@ import 'package:eye_hospital/views/after_login_pages/doctor/appointment_page.dar
 import 'package:eye_hospital/views/after_login_pages/doctor/doctor_details_page.dart';
 import 'package:eye_hospital/views/after_login_pages/doctor/find_doctor_page.dart';
 import 'package:eye_hospital/views/after_login_pages/doctor/my_appointment_page.dart';
-import 'package:eye_hospital/views/after_login_pages/doctor/video_call_page.dart';
 import 'package:eye_hospital/views/after_login_pages/home_screen.dart';
 import 'package:eye_hospital/views/after_login_pages/my_cart_page.dart';
 import 'package:eye_hospital/views/after_login_pages/profile/edit_profile_Page.dart';
@@ -46,7 +45,7 @@ class AppPages {
       name: AppRoutes.appointmentDetails,
       page: () => AppointmentDetailPage(),
     ),
-    GetPage(name: AppRoutes.videoCall, page: () => VideoCallPage()),
+    // GetPage(name: AppRoutes.videoCall, page: () => VideoCallPage()),
 
     // shop
     GetPage(name: AppRoutes.productPage, page: () => ProductPage()),

@@ -70,7 +70,9 @@ class PickProfileImagePage extends StatelessWidget {
                       text: "Continue",
                       background: AppColors.primary,
                       textColor: AppColors.textSecondary,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.homeScreen);
+                      },
                     )
                   : SizedBox.shrink(),
             ),

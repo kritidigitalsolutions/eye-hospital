@@ -1,3 +1,4 @@
+import 'package:eye_hospital/repo/auth_repo.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +8,15 @@ class OtpController extends GetxController {
   final isLoading = false.obs;
 
   final List<TextEditingController> otpControllers = List.generate(
-    4,
+    6,
     (_) => TextEditingController(),
   );
 
-  final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
   void onOtpChanged(String value, int index) {
     if (value.length == 1) {
-      if (index < 3) {
+      if (index < 5) {
         focusNodes[index + 1].requestFocus();
       }
     } else if (value.isEmpty) {
@@ -41,21 +42,36 @@ class OtpController extends GetxController {
     }
   }
 
-  void submitOtp() {
+  void submitOtp(String phone) {
     String otp = otpControllers.map((e) => e.text).join();
-    if (otp.length < 4) {
+    if (otp.length < 6) {
       CustomSnakebar.error("Error", "Please enter complete OTP");
       return;
     }
 
-    isLoading.value = true;
+    verifyOtp(phone, otp);
+  }
 
-    // API call yahan daal dena
-    Future.delayed(const Duration(seconds: 2), () {
-      isLoading.value = false;
+  // ------------------------------------------------------
+  // Api
+  //--------------------------------------
+
+  final _repo = AuthRepo();
+
+  Future<void> verifyOtp(String phone, String otp) async {
+    isLoading.value = true;
+    try {
+      await _repo.verfiyOtp(phone, otp);
       CustomSnakebar.success("Success", "OTP Verified Successfully");
-      Get.toNamed(AppRoutes.registerPage);
-    });
+      Get.toNamed(AppRoutes.registerPage, arguments: phone);
+    } catch (e) {
+      CustomSnakebar.error(
+        "Error",
+        "Something went wrong. Please try again later",
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override

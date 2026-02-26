@@ -1,6 +1,7 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
+import 'package:eye_hospital/utils/hive_service/hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 3), () {
-      Get.toNamed(AppRoutes.onBoarding);
+      final token = HiveService.getToken();
+
+      if (token == null || token.isEmpty) {
+        Get.toNamed(AppRoutes.onBoarding);
+      } else {
+        Get.toNamed(AppRoutes.homeScreen);
+      }
     });
   }
 

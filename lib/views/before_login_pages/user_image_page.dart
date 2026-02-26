@@ -1,6 +1,5 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
-import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/before_login_controller/login_controller.dart';
@@ -12,6 +11,7 @@ class PickProfileImagePage extends StatelessWidget {
   PickProfileImagePage({super.key});
 
   final RegisterController ctr = Get.find<RegisterController>();
+  final phone = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -27,65 +27,84 @@ class PickProfileImagePage extends StatelessWidget {
         centerTitle: true,
         actions: [
           textButton("Skip", () {
-            Get.toNamed(AppRoutes.homeScreen);
+            ctr.registerUser(phone);
           }),
         ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(15),
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.all(15),
+            width: double.infinity,
+            height: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
 
-          children: [
-            Text(
-              "Add a profile photo (Optional)",
-              style: text16(fontWeight: FontWeight.bold),
+              children: [
+                Text(
+                  "Add a profile photo (Optional)",
+                  style: text16(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+
+                Obx(
+                  () => CircleAvatar(
+                    radius: 60,
+                    backgroundImage: ctr.profileImage.value != null
+                        ? FileImage(ctr.profileImage.value!)
+                        : const AssetImage(AppImages.doctor) as ImageProvider,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                CustomElevatedIconButton(
+                  title: "Pick Image",
+                  icon: Icons.camera_alt_outlined,
+                  onPressed: () {
+                    showPickerSheet();
+                  },
+                ),
+
+                Obx(
+                  () => ctr.profileImage.value != null
+                      ? elevatedButton(
+                          text: "Continue",
+
+                          background: AppColors.primary,
+                          textColor: AppColors.textSecondary,
+                          onPressed: () {
+                            ctr.registerUser(phone);
+                          },
+                        )
+                      : SizedBox.shrink(),
+                ),
+
+                // ElevatedButton.icon(
+                //   onPressed: () {
+                //     showPickerSheet();
+                //   },
+                //   icon: const Icon(Icons.camera_alt),
+                //   label: const Text("Pick Image"),
+                // ),
+              ],
             ),
-            const SizedBox(height: 20),
-
-            Obx(
-              () => CircleAvatar(
-                radius: 60,
-                backgroundImage: ctr.profileImage.value != null
-                    ? FileImage(ctr.profileImage.value!)
-                    : const AssetImage(AppImages.doctor) as ImageProvider,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            CustomElevatedIconButton(
-              title: "Pick Image",
-              icon: Icons.camera_alt_outlined,
-              onPressed: () {
-                showPickerSheet();
-              },
-            ),
-
-            Obx(
-              () => ctr.profileImage.value != null
-                  ? elevatedButton(
-                      text: "Continue",
-                      background: AppColors.primary,
-                      textColor: AppColors.textSecondary,
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.homeScreen);
-                      },
-                    )
-                  : SizedBox.shrink(),
-            ),
-
-            // ElevatedButton.icon(
-            //   onPressed: () {
-            //     showPickerSheet();
-            //   },
-            //   icon: const Icon(Icons.camera_alt),
-            //   label: const Text("Pick Image"),
-            // ),
-          ],
-        ),
+          ),
+          Obx(
+            () => ctr.isLoading.value
+                ? Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: AppColors.black.withAlpha(50),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }

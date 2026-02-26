@@ -11,6 +11,7 @@ class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
 
   final controller = Get.put(RegisterController());
+  final phone = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +120,7 @@ class RegisterScreen extends StatelessWidget {
                         title: "Get Started",
                         onPressed: () {
                           print("validation---------------");
-                          controller.validateForm();
+                          controller.validateForm(phone);
                           print("validation-----------fdgfdgf----");
                         },
                       ),

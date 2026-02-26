@@ -13,13 +13,6 @@ class EditProfilePage extends StatelessWidget {
 
   final EditProfileController ctr = Get.put(EditProfileController());
 
-  final TextEditingController nameController = TextEditingController(
-    text: "Amit Kumar",
-  );
-  final TextEditingController mobileController = TextEditingController(
-    text: "9876543210",
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +59,7 @@ class EditProfilePage extends StatelessWidget {
 
             /// Name
             CustomTextFieldWithBorder(
-              controller: nameController,
+              controller: ctr.nameController,
               hintText: "Full Name",
             ),
 
@@ -75,7 +68,7 @@ class EditProfilePage extends StatelessWidget {
             /// Mobile
             AbsorbPointer(
               child: CustomTextFieldWithBorder(
-                controller: mobileController,
+                controller: ctr.mobileController,
                 hintText: "Mobile Number",
               ),
             ),
@@ -108,37 +101,18 @@ class EditProfilePage extends StatelessWidget {
             const SizedBox(height: 14),
 
             /// DOB Picker
-            Obx(
-              () => InkWell(
-                onTap: () async {
-                  DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime(2000),
-                    firstDate: DateTime(1950),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (picked != null) {
-                    ctr.setDob(picked);
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey),
-                  ),
-                  child: Text(
-                    ctr.dob.value == null
-                        ? "Select Date of Birth"
-                        : "${ctr.dob.value!.day}-${ctr.dob.value!.month}-${ctr.dob.value!.year}",
-                  ),
-                ),
-              ),
+            /// DOB
+            CustomTextFieldWithBorder(
+              controller: ctr.dob,
+              hintText: "Date of birth",
+              readOnly: true,
+              onTap: () => ctr.selectDate(context),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return "Please select your date of birth";
+                }
+                return null;
+              },
             ),
 
             const SizedBox(height: 30),

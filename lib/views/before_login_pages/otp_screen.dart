@@ -9,11 +9,12 @@ import 'package:get/get.dart';
 
 class OtpScreen extends StatelessWidget {
   OtpScreen({super.key});
-
+  final data = Get.arguments;
   final OtpController controller = Get.put(OtpController());
 
   @override
   Widget build(BuildContext context) {
+    print(data);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -44,7 +45,7 @@ class OtpScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(
-                    4,
+                    6,
                     (index) => OtpTextField(
                       index: index,
                       controller: controller.otpControllers[index],
@@ -62,7 +63,9 @@ class OtpScreen extends StatelessWidget {
                   () => CustomButton(
                     title: "Continue",
                     isLoading: controller.isLoading.value,
-                    onPressed: controller.submitOtp,
+                    onPressed: () {
+                      controller.submitOtp(data);
+                    },
                   ),
                 ),
               ],

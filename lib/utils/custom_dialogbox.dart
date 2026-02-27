@@ -1,6 +1,9 @@
+import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
+import 'package:eye_hospital/utils/hive_service/hive_service.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void showCustomDialog(BuildContext context) {
   showDialog(
@@ -101,8 +104,9 @@ void showConfirmDialog(BuildContext context) {
         textButton("Cancel", () {
           Navigator.pop(context);
         }),
-        textButton("Yes", () {
-          Navigator.pop(context);
+        textButton("Yes", () async {
+          HiveService.logout();
+          Get.offAllNamed(AppRoutes.loginPage);
         }),
       ],
     ),

@@ -1,6 +1,8 @@
 import 'package:eye_hospital/repo/auth_repo.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/custom_snakebar.dart';
+import 'package:eye_hospital/utils/hive_service/hive_service.dart';
+import 'package:eye_hospital/utils/hive_service/userdetail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -61,9 +63,31 @@ class OtpController extends GetxController {
   Future<void> verifyOtp(String phone, String otp) async {
     isLoading.value = true;
     try {
-      await _repo.verfiyOtp(phone, otp);
-      CustomSnakebar.success("Success", "OTP Verified Successfully");
-      Get.toNamed(AppRoutes.registerPage, arguments: phone);
+      final res = await _repo.verfiyOtp(phone, otp);
+
+      final isNewUser = res["isNewUser"];
+      if (isNewUser) {
+        CustomSnakebar.success("Success", "OTP Verified Successfully");
+        Get.toNamed(AppRoutes.registerPage, arguments: phone);
+      } else {
+        // ✅ save user & token
+        final userJson = res["user"];
+        final token = res["token"]; // if backend sends token
+
+        final user = UserDetails(
+          name: userJson["name"],
+          dob: userJson["dob"],
+          gender: userJson["gender"],
+          token: token,
+        );
+
+        await HiveService.saveUser(user);
+
+        CustomSnakebar.success("Success", "Login Successfully");
+
+        // ✅ remove OTP screen from stack
+        Get.offAllNamed(AppRoutes.homeScreen);
+      }
     } catch (e) {
       CustomSnakebar.error(
         "Error",

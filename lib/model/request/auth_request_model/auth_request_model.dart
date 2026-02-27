@@ -19,7 +19,7 @@ class UserDetailsReqModel {
       "phone": phone,
       "dob": dob,
       "gender": gender,
-      "image": image,
+      "profileImage": image,
     };
   }
 }

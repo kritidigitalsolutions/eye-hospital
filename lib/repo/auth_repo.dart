@@ -30,9 +30,13 @@ class AuthRepo {
 
   // send otp
 
-  Future<void> verfiyOtp(String phone, String otp) async {
+  Future<Map<String, dynamic>> verfiyOtp(String phone, String otp) async {
     try {
-      await _api.postApi(AppUrls.otpVerify, {"otp": otp, "phone": phone});
+      final res = await _api.postApi(AppUrls.otpVerify, {
+        "otp": otp,
+        "phone": phone,
+      });
+      return res;
     } catch (e) {
       rethrow;
     }
@@ -42,35 +46,30 @@ class AuthRepo {
 
   Future<UserDetailsResModel> registerUser(UserDetailsReqModel model) async {
     try {
+      print("📤 REGISTER API CALLED");
+      print("REGISTER DATA => ${model.toJson()}");
+
       final dio = Dio();
 
-      // create FormData separately
       final formData = FormData.fromMap({
         "name": model.name,
         "dob": model.dob,
         "gender": model.gender,
-
-        // optional image
+        "phone": model.phone,
         if (model.image != null && model.image!.isNotEmpty)
-          "image": await MultipartFile.fromFile(
+          "profileImage": await MultipartFile.fromFile(
             model.image!,
             filename: model.image!.split('/').last,
           ),
       });
 
-      final response = await dio.post(
-        AppUrls.register,
-        data: formData,
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            // do NOT set Content-Type manually for FormData
-          },
-        ),
-      );
+      final response = await dio.post(AppUrls.register, data: formData);
+
+      print("✅ REGISTER RESPONSE => ${response.data}");
 
       return UserDetailsResModel.fromJson(response.data);
     } catch (e) {
+      print("❌ REGISTER ERROR => $e");
       rethrow;
     }
   }

@@ -145,10 +145,12 @@ class RegisterController extends GetxController {
         gender: user?.gender ?? '',
         token: res.token ?? '',
       );
-      HiveService.saveUser(saveData);
+      print(res.user);
+      await HiveService.saveUser(saveData);
       Get.offAllNamed(AppRoutes.homeScreen);
-      CustomSnakebar.error("Success", "New Register successful");
+      CustomSnakebar.success("Success", "New Register successful");
     } catch (e) {
+      print(e.toString());
       CustomSnakebar.error(
         "Error",
         "Something went wrong. Please try again later",

@@ -141,9 +141,11 @@ class RegisterController extends GetxController {
       final user = res.user;
       final saveData = UserDetails(
         name: user?.name ?? '',
-        dob: user?.birth ?? '',
+        dob: user?.dob ?? '',
         gender: user?.gender ?? '',
         token: res.token ?? '',
+        phone: phone,
+        image: profileImage.value?.path,
       );
       print(res.user);
       await HiveService.saveUser(saveData);

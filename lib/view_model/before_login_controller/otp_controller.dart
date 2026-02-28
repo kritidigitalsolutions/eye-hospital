@@ -79,6 +79,7 @@ class OtpController extends GetxController {
           dob: userJson["dob"],
           gender: userJson["gender"],
           token: token,
+          phone: phone,
         );
 
         await HiveService.saveUser(user);

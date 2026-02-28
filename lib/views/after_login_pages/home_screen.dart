@@ -9,6 +9,7 @@ import 'package:eye_hospital/utils/hive_service/hive_service.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/home_controller.dart';
+import 'package:eye_hospital/view_model/after_login_controller/profile_controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +17,7 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final controller = Get.put(HomeController());
+  final profileCtr = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,17 @@ class HomeScreen extends StatelessWidget {
             child: CircleAvatar(backgroundImage: AssetImage(AppImages.doctor)),
           ),
         ),
-        title: Text(
-          "Hello\nAmit kumar",
-          style: text16(fontWeight: FontWeight.w600),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Hello", style: text16(fontWeight: FontWeight.w600)),
+            Obx(
+              () => Text(
+                profileCtr.name.value,
+                style: text16(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
         ),
         actions: [menuIconButton(context), SizedBox(width: 12)],
       ),

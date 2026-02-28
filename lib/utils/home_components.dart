@@ -50,19 +50,39 @@ Widget doctorCard() {
   );
 }
 
-Widget statusBar(MainAxisAlignment place) {
+Widget statusBar(MainAxisAlignment place, String? status) {
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case "completed":
+        return AppColors.greenGr1;
+      case "pending":
+        return AppColors.warning;
+      case "cancelled":
+        return AppColors.error;
+      case "confirmed":
+        return AppColors.primary;
+      default:
+        return AppColors.grey;
+    }
+  }
+
+  final color = getStatusColor(status ?? "");
+
   return Row(
     mainAxisAlignment: place,
     children: [
-      Text("Status: Confirmed", style: TextStyle(fontSize: 12)),
-      SizedBox(width: 6),
+      Text(
+        "Status: ${status ?? "N/A"}",
+        style: text12(
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      const SizedBox(width: 6),
       Container(
         width: 10,
         height: 10,
-        decoration: BoxDecoration(
-          color: AppColors.success,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     ],
   );

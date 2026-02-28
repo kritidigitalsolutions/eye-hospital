@@ -128,6 +128,8 @@ class CustomTextFieldWithBorder extends StatelessWidget {
   final double borderRadius;
   final VoidCallback? onTap;
   final int? maxLength;
+  final int? maxLine;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextFieldWithBorder({
     super.key,
@@ -139,15 +141,19 @@ class CustomTextFieldWithBorder extends StatelessWidget {
     this.isNumberOnly = false,
     this.filledColor = AppColors.white,
     this.borderRadius = AppDimensions.radiusMedium,
+    this.maxLine = 1,
     this.maxLength,
     this.onTap,
     this.prefixIcon,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: readOnly,
+      onChanged: onChanged,
+      maxLines: maxLine,
       style: text16(fontWeight: FontWeight.w600, color: AppColors.textPrimary),
       controller: controller,
       keyboardType: isNumberOnly ? TextInputType.number : keyboardType,

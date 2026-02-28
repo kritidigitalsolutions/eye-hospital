@@ -2,11 +2,14 @@ import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/view_model/after_login_controller/profile_controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MyProfilePage extends StatelessWidget {
-  const MyProfilePage({super.key});
+  MyProfilePage({super.key});
+
+  final ctr = Get.find<EditProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +51,16 @@ class MyProfilePage extends StatelessWidget {
             ),
 
             const SizedBox(height: 20),
-
-            profileItem("Name", "Amit Kumar"),
-            profileItem("Gender", "Male"),
-            profileItem("Date of Birth", "12 Feb 1998"),
-            profileItem("Mobile", "+91 9876543210"),
-
-            // CustomElevatedIconButton(
-            //   title: "Edit Profile",
-            //   icon: Icons.edit,
-            //   onPressed: () {},
-            // ),
+            Obx(
+              () => Column(
+                children: [
+                  profileItem("Name", ctr.name.value),
+                  profileItem("Gender", ctr.gender.value),
+                  profileItem("Date of Birth", ctr.dob.value),
+                  profileItem("Mobile", ctr.mobile.value),
+                ],
+              ),
+            ),
           ],
         ),
       ),

@@ -113,6 +113,7 @@ Widget elevatedButton({
   VoidCallback? onPressed,
   required Color background,
   required Color textColor,
+  bool isLoading = false,
 }) {
   return ElevatedButton(
     onPressed: onPressed,
@@ -122,12 +123,23 @@ Widget elevatedButton({
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
-    child: Text(
-      text,
-      style: text14(
-        fontWeight: FontWeight.w600,
-        color: textColor,
-      ).copyWith(height: 1.1),
+    child: Center(
+      child: isLoading
+          ? const SizedBox(
+              height: 22,
+              width: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Text(
+              text,
+              style: text14(
+                fontWeight: FontWeight.w600,
+                color: textColor,
+              ).copyWith(height: 1.1),
+            ),
     ),
   );
 }

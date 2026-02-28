@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 class EditProfilePage extends StatelessWidget {
   EditProfilePage({super.key});
 
-  final EditProfileController ctr = Get.put(EditProfileController());
+  final ctr = Get.find<EditProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: ctr.gender.value,
+                    value: ctr.genderCtr.value,
                     isExpanded: true,
                     items: ["Male", "Female", "Other"]
                         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
@@ -103,7 +103,7 @@ class EditProfilePage extends StatelessWidget {
             /// DOB Picker
             /// DOB
             CustomTextFieldWithBorder(
-              controller: ctr.dob,
+              controller: ctr.dobCtr,
               hintText: "Date of birth",
               readOnly: true,
               onTap: () => ctr.selectDate(context),
@@ -118,7 +118,15 @@ class EditProfilePage extends StatelessWidget {
             const SizedBox(height: 30),
 
             /// Save Button
-            CustomButton(title: "Save Changes", onPressed: () {}),
+            Obx(
+              () => CustomButton(
+                title: "Save Changes",
+                isLoading: ctr.isLoading.value,
+                onPressed: () {
+                  ctr.editProfile();
+                },
+              ),
+            ),
           ],
         ),
       ),

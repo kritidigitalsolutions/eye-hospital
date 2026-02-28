@@ -1,4 +1,7 @@
-import 'package:eye_hospital/res/app_images.dart';
+import 'package:eye_hospital/data/api_response.dart';
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
+import 'package:eye_hospital/repo/product_repo.dart';
+import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:get/get.dart';
 
 class ProductController extends GetxController {
@@ -6,41 +9,39 @@ class ProductController extends GetxController {
 
   final categories = ["Spectacles", "Lenses", "Frames"];
 
-  final List<Map<String, String>> glassesProducts = List.generate(
-    8,
-    (index) => {
-      "title": "Classic Spectacles",
-      "price": "Rs. 250",
-      "image": AppImages.on3,
-    },
-  );
+  final _repo = ProductRepo();
 
-  final List<Map<String, String>> lensProducts = List.generate(
-    8,
-    (index) => {
-      "title": "Blue Color Lens",
-      "price": "Rs. 300",
-      "image": AppImages.lens,
-    },
-  );
+  var productList = ApiResponse<ProductResModelDart>.loading().obs;
 
-  final List<Map<String, String>> frameProducts = List.generate(
-    8,
-    (index) => {
-      "title": "Premium Frame",
-      "price": "Rs. 400",
-      "image": AppImages.frame,
-    },
-  );
+  @override
+  void onInit() {
+    fetchProduct();
+    super.onInit();
+  }
 
-  /// 👇 this will change automatically
-  List<Map<String, String>> get products {
+  Future<void> fetchProduct() async {
+    productList.value = ApiResponse.loading();
+    try {
+      final res = await _repo.getProduct();
+      productList.value = ApiResponse.completed(res);
+    } catch (e) {
+      productList.value = ApiResponse.error(e.toString());
+      CustomSnakebar.error("Error", "Failed to load products");
+    }
+  }
+
+  /// ✅ Filter products by selected category
+  List<Product> get filteredProducts {
+    if (productList.value.data == null) return [];
+
+    final allProducts = productList.value.data!.products;
+
     if (selectedCategory.value == 0) {
-      return glassesProducts;
+      return allProducts.where((p) => p.category == "spectacles").toList();
     } else if (selectedCategory.value == 1) {
-      return lensProducts;
+      return allProducts.where((p) => p.category == "lenses").toList();
     } else {
-      return frameProducts;
+      return allProducts.where((p) => p.category == "frames").toList();
     }
   }
 }

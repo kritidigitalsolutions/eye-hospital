@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final searchDoctorCtr = TextEditingController();
+  RxString userName = "".obs;
 }
 
 // ---------------------------------------------------

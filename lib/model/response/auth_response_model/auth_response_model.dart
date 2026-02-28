@@ -4,14 +4,14 @@
 
 class OnBoardingResponseModel {
   final bool? success;
-  final List<OnBoardingData> data;
+  final List<OnBoardingData> wallpapers;
 
-  OnBoardingResponseModel({required this.data, required this.success});
+  OnBoardingResponseModel({required this.wallpapers, required this.success});
 
   factory OnBoardingResponseModel.fromJson(Map<String, dynamic> json) {
     return OnBoardingResponseModel(
       success: json["success"],
-      data: (json["data"] as List)
+      wallpapers: (json["wallpapers"] as List)
           .map((item) => OnBoardingData.fromJson(item))
           .toList(),
     );
@@ -57,13 +57,6 @@ class UserDetailsResModel {
       user: json["user"] == null ? null : User.fromJson(json["user"]),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "token": token,
-    "user": user?.toJson(),
-  };
 }
 
 class User {
@@ -71,7 +64,7 @@ class User {
     required this.id,
     required this.name,
     required this.phone,
-    required this.birth,
+    required this.dob,
     required this.gender,
   });
 
@@ -79,7 +72,7 @@ class User {
   final String? name;
   final String? phone;
 
-  final String? birth;
+  final String? dob;
   final String? gender;
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -87,16 +80,8 @@ class User {
       id: json["_id"],
       name: json["name"],
       phone: json["phone"],
-      birth: json["birth"],
+      dob: json["dob"],
       gender: json["gender"],
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "phone": phone,
-    "birth": birth,
-    "gender": gender,
-  };
 }

@@ -1,3 +1,5 @@
+import 'package:eye_hospital/data/api_response.dart';
+import 'package:eye_hospital/model/response/doctor_res/doctor_list_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
@@ -21,32 +23,51 @@ class FindDoctorsPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Title
               Text("Find Eye Doctors", style: text20()),
-
               const SizedBox(height: 12),
 
-              // Search Bar
               CustomTextFieldWithBorder(
                 controller: ctr.searchDoctorCtr,
                 hintText: "Search Doctor",
                 borderRadius: AppDimensions.radiusExtraLarge,
                 prefixIcon: Icons.search,
+                onChanged: (value) {
+                  ctr.filterDoctors(value);
+                },
               ),
 
               const SizedBox(height: 16),
+              Obx(() {
+                final status = ctr.doctorList.value.status;
 
-              // List
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 7,
-                  itemBuilder: (context, index) {
-                    return doctorCard();
-                  },
-                ),
-              ),
+                switch (status) {
+                  case Status.loading:
+                    return _buildLoading();
+
+                  case Status.error:
+                    return _buildError(
+                      ctr.doctorList.value.message ?? "Something went wrong",
+                    );
+
+                  case Status.completed:
+                    return Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await ctr.refreshDoctors(); // 🔄 pull to refresh
+                        },
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: ctr.filteredDoctors.length,
+                          itemBuilder: (context, index) {
+                            final doctor = ctr.filteredDoctors[index];
+                            return doctorCard(doctor);
+                          },
+                        ),
+                      ),
+                    );
+                }
+              }),
             ],
           ),
         ),
@@ -54,10 +75,56 @@ class FindDoctorsPage extends StatelessWidget {
     );
   }
 
-  Widget doctorCard() {
+  Widget _buildLoading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primary),
+          const SizedBox(height: 12),
+          Text("Loading doctors...", style: text14()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildError(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 60),
+            const SizedBox(height: 12),
+            Text("Oops!", style: text18(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: text14(color: AppColors.grey),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                ctr.searchDoctor(); // call your API again
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text("Retry"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget doctorCard(Doctor doctor) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(AppRoutes.doctorDetails);
+        Get.toNamed(
+          AppRoutes.doctorDetails,
+          arguments: doctor, // pass doctor object
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -72,14 +139,14 @@ class FindDoctorsPage extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Left Content
+            /// Left Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pankaj Tripathi", style: text16()),
+                  Text(doctor.name ?? "Unknown Doctor", style: text16()),
                   const SizedBox(height: 4),
-                  Text("Eye Specialist", style: text12()),
+                  Text(doctor.specialization ?? "Specialist", style: text12()),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -99,14 +166,18 @@ class FindDoctorsPage extends StatelessWidget {
               ),
             ),
 
-            // Right Image
+            /// Right Image
             CircleAvatar(
               radius: 36,
               backgroundColor: AppColors.grey,
               child: CircleAvatar(
                 radius: 35,
                 backgroundColor: AppColors.white,
-                child: Image.asset(AppImages.doctor, fit: BoxFit.contain),
+                backgroundImage:
+                    (doctor.profileImage != null &&
+                        doctor.profileImage.toString().isNotEmpty)
+                    ? NetworkImage(doctor.profileImage)
+                    : const AssetImage(AppImages.doctor) as ImageProvider,
               ),
             ),
           ],

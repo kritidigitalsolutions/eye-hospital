@@ -1,8 +1,8 @@
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
-import 'package:eye_hospital/view_model/after_login_controller/shop_controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -10,13 +10,10 @@ import 'package:get/get.dart';
 class ProductDetailsPage extends StatelessWidget {
   ProductDetailsPage({super.key});
 
-  final data = Get.arguments;
-
-  final controller = Get.put(ProductDetailsController());
+  final Product product = Get.arguments as Product;
 
   @override
   Widget build(BuildContext context) {
-    print(data);
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -26,7 +23,6 @@ class ProductDetailsPage extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: AppColors.white,
-        automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -43,12 +39,20 @@ class ProductDetailsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Image.asset(data["image"], height: 120),
-                  const SizedBox(height: 8),
-                  Text(
-                    data["title"],
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Image.network(
+                    product.images.isNotEmpty ? product.images.first : "",
+                    height: 150,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.image_not_supported, size: 100),
                   ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    product.name ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+
                   const SizedBox(height: 10),
 
                   /// Icons row
@@ -56,9 +60,7 @@ class ProductDetailsPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [
                       Icon(FontAwesomeIcons.cartPlus, size: 20),
-                      SizedBox(width: 16),
                       Icon(Icons.favorite_border, size: 23),
-                      SizedBox(width: 16),
                       Icon(Icons.share, size: 23),
                     ],
                   ),
@@ -75,8 +77,8 @@ class ProductDetailsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      data['price'],
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      "₹ ${product.discountedPrice ?? product.price ?? 0}",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -86,17 +88,12 @@ class ProductDetailsPage extends StatelessWidget {
             const SizedBox(height: 16),
 
             /// Available Colors
-            const Text(
-              "Available Colors",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            sectionTitle("Available Colors"),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                ColorChip("Black", 0),
-                ColorChip("Brown", 1),
-                ColorChip("Transparent", 2),
-              ],
+            Wrap(
+              children: product.availableColors
+                  .map((color) => ColorChip(text: color))
+                  .toList(),
             ),
 
             const SizedBox(height: 16),
@@ -104,31 +101,52 @@ class ProductDetailsPage extends StatelessWidget {
             /// Product Highlights
             sectionTitle("Product Highlights"),
             const SizedBox(height: 8),
-            highlightText("Lightweight & durable design"),
-            highlightText("Comfortable for daily wear"),
-            highlightText("Suitable for all face shapes"),
-            highlightText("Premium quality material"),
+            ...product.highlights.map((e) => highlightText(e)).toList(),
 
             const SizedBox(height: 16),
 
             /// Frame Details
             sectionTitle("Frame Details"),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: frameRow("Frame Type", "Full Rim")),
-                Expanded(child: frameRow("Frame Size", "Medium")),
-                Expanded(child: frameRow("Frame Shape", "Rectangle")),
+                Expanded(
+                  child: frameRow(
+                    "Frame Type",
+                    product.frameDetails?.frameType ?? "-",
+                  ),
+                ),
+                Expanded(
+                  child: frameRow(
+                    "Frame Size",
+                    product.frameDetails?.frameSize ?? "-",
+                  ),
+                ),
+                Expanded(
+                  child: frameRow(
+                    "Frame Shape",
+                    product.frameDetails?.frameShape ?? "-",
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: frameRow("Gender", "Unisex")),
-                Expanded(child: frameRow("Frame Material", "Acetate")),
-                Expanded(child: SizedBox(width: 25)),
+                Expanded(
+                  child: frameRow(
+                    "Gender",
+                    product.frameDetails?.gender ?? "-",
+                  ),
+                ),
+                Expanded(
+                  child: frameRow(
+                    "Material",
+                    product.frameDetails?.frameMaterial ?? "-",
+                  ),
+                ),
+                const Expanded(child: SizedBox()),
               ],
             ),
 
@@ -143,7 +161,7 @@ class ProductDetailsPage extends StatelessWidget {
                   background: AppColors.buttonPrimary,
                   textColor: AppColors.textPrimary,
                   onPressed: () {
-                    Get.toNamed(AppRoutes.checkoutPage);
+                    Get.toNamed(AppRoutes.checkoutPage, arguments: product);
                   },
                 ),
               ],
@@ -153,16 +171,14 @@ class ProductDetailsPage extends StatelessWidget {
 
             /// Care Instructions
             sectionTitle("Care Instructions"),
-            highlightText("Clean with microfiber cloth"),
-            highlightText("Avoid heat exposure"),
-            highlightText("Store in protective case"),
+            ...product.careInstructions.map((e) => highlightText(e)).toList(),
 
             const SizedBox(height: 16),
 
-            /// Customer Reviews
+            /// Customer Reviews (static UI for now)
             sectionTitle("Customer Reviews"),
             const SizedBox(height: 8),
-            Column(children: List.generate(6, (index) => reviewCard())),
+            Column(children: List.generate(3, (index) => reviewCard())),
           ],
         ),
       ),
@@ -184,7 +200,7 @@ class ProductDetailsPage extends StatelessWidget {
         children: [
           const Icon(Icons.check, size: 15, color: AppColors.success),
           const SizedBox(width: 6),
-          Text(text),
+          Expanded(child: Text(text)),
         ],
       ),
     );
@@ -209,60 +225,21 @@ class ProductDetailsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             backgroundColor: AppColors.primary.withAlpha(100),
             radius: 30,
-            child: Text(
-              "R",
-              style: text16(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
+            child: const Text("R"),
           ),
-
           const SizedBox(width: 8),
-
-          /// Wrap Column with Expanded to avoid overflow
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Name
-                Text(
-                  "Radhika",
-                  style: text16(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-
-                const SizedBox(height: 2),
-
-                /// ⭐ Stars row
-                Row(
-                  children: List.generate(
-                    5,
-                    (index) => const Icon(
-                      Icons.star,
-                      size: 14,
-                      color: AppColors.orange,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                /// Review text
+              children: const [
+                Text("Radhika", style: TextStyle(fontWeight: FontWeight.w600)),
+                SizedBox(height: 4),
                 Text(
                   "Very comfortable and stylish frame. Value for money.",
-                  style: text12(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -278,39 +255,19 @@ class ProductDetailsPage extends StatelessWidget {
 /// Color chip widget
 class ColorChip extends StatelessWidget {
   final String text;
-  final int index;
-  final ProductDetailsController controller = Get.find();
 
-  ColorChip(this.text, this.index, {super.key});
+  const ColorChip({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final isSelected = controller.selectedCategory.value == index;
-
-      return GestureDetector(
-        onTap: () {
-          controller.selectedCategory.value = index;
-        },
-        child: Container(
-          margin: const EdgeInsets.only(right: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : AppColors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: isSelected ? AppColors.white : AppColors.grey,
-            ),
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: isSelected ? AppColors.black : AppColors.grey.shade700,
-            ),
-          ),
-        ),
-      );
-    });
+    return Container(
+      margin: const EdgeInsets.only(right: 8, bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(text, style: const TextStyle(fontWeight: FontWeight.w600)),
+    );
   }
 }

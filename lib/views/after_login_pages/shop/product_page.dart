@@ -1,3 +1,5 @@
+import 'package:eye_hospital/data/api_response.dart';
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
@@ -101,21 +103,43 @@ class _ProductPageState extends State<ProductPage> {
               /// Grid Products
               /// Grid Products
               Expanded(
-                child: Obx(
-                  () => GridView.builder(
-                    itemCount: ctr.products.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 0.90,
+                child: Obx(() {
+                  final status = ctr.productList.value.status;
+
+                  switch (status) {
+                    case Status.loading:
+                      return const Center(child: CircularProgressIndicator());
+
+                    case Status.error:
+                      return Center(
+                        child: Text(
+                          ctr.productList.value.message ??
+                              "Something went wrong",
                         ),
-                    itemBuilder: (context, index) {
-                      return productCard(ctr.products[index]);
-                    },
-                  ),
-                ),
+                      );
+
+                    case Status.completed:
+                      final products = ctr.filteredProducts;
+
+                      if (products.isEmpty) {
+                        return const Center(child: Text("No products found"));
+                      }
+
+                      return GridView.builder(
+                        itemCount: products.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 0.90,
+                            ),
+                        itemBuilder: (context, index) {
+                          return productCard(products[index]);
+                        },
+                      );
+                  }
+                }),
               ),
             ],
           ),
@@ -124,54 +148,87 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  Widget productCard(Map<String, String> item) {
+  Widget productCard(Product item) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(AppRoutes.productDetails, arguments: item);
       },
       child: Container(
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.grey.shade200,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Top icons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            /// Image from API
+            Stack(
               children: [
-                Icon(FontAwesomeIcons.cartPlus, size: 18),
-                Icon(Icons.favorite_border, size: 22),
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1.5,
+                    child: Image.network(
+                      item.images.isNotEmpty ? item.images.first : "",
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => AspectRatio(
+                        aspectRatio: 1.5,
+                        child: Container(
+                          color: AppColors.grey.shade300,
+                          child: Center(
+                            child: const Icon(Icons.image_not_supported),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Icon(FontAwesomeIcons.cartPlus, size: 18),
+                        Icon(Icons.favorite_border, size: 22),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
 
-            /// Image
-            Expanded(
-              child: Center(
-                child: Image.asset(item["image"]!, fit: BoxFit.contain),
-              ),
-            ),
+            SizedBox(height: 8),
 
-            Text(
-              item["title"]!,
-              style: text14(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                item.name ?? "",
+                style: text14(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
 
             const SizedBox(height: 6),
 
             Container(
+              margin: EdgeInsets.only(left: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                item["price"]!,
+                "₹ ${item.discountedPrice ?? item.price ?? 0}",
                 style: text14(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,

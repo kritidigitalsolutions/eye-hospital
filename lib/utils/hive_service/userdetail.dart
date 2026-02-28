@@ -18,11 +18,15 @@ class UserDetails extends HiveObject {
   @HiveField(4)
   String token;
 
+  @HiveField(5)
+  String? phone;
+
   UserDetails({
     required this.name,
     required this.dob,
     required this.gender,
     this.image,
     required this.token,
+    required this.phone,
   });
 }

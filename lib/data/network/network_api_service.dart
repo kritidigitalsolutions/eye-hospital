@@ -103,11 +103,11 @@ class NetworkApiService extends BaseApiService {
   }
 
   @override
-  Future<dynamic> deleteApi(String url) async {
+  Future<dynamic> deleteApi(String url, dynamic data) async {
     try {
       debugPrint("DELETE API CALL => $url");
 
-      final response = await _dio.delete(url);
+      final response = await _dio.delete(url, data: data);
       return returnResponse(response);
     } on DioException catch (e) {
       debugPrint("DELETE API ERROR => ${e.message}");

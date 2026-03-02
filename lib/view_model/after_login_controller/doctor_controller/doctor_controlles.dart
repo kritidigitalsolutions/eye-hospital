@@ -132,7 +132,7 @@ class AppointmentController extends GetxController {
   final _repo = DoctorRepo();
   var isLoading = false.obs;
 
-  Future<void> getAppointment(String id) async {
+  Future<void> getAppointment(String id, bool isNew) async {
     isLoading.value = true;
     if (id.isEmpty) {
       CustomSnakebar.error(
@@ -151,12 +151,22 @@ class AppointmentController extends GetxController {
         timeSlot: selectedTimeSlot.value,
         patientNotes: patientIssue.text.trim(),
       );
-      await _repo.postAppointment(model);
-      Get.toNamed(AppRoutes.myAppointment);
-      CustomSnakebar.success(
-        "Appointment Booked",
-        "Your appointment has been successfully scheduled.",
-      );
+
+      if (isNew) {
+        await _repo.postAppointment(model);
+        Get.offAllNamed(AppRoutes.myAppointment);
+        CustomSnakebar.success(
+          "Appointment Booked",
+          "Your appointment has been successfully scheduled.",
+        );
+      } else {
+        await _repo.rescheduleAppointment(id, model);
+        Get.offAllNamed(AppRoutes.myAppointment);
+        CustomSnakebar.success(
+          "Appointment Booked",
+          "Your appointment has been successfully rescheduled.",
+        );
+      }
     } catch (e) {
       CustomSnakebar.error(
         "Error",
@@ -178,7 +188,7 @@ class MyAppOintmentController extends GetxController {
   var myAppointment = ApiResponse<MyAppointmentResModelDart>.completed(
     null,
   ).obs;
-
+  var selectedStatus = "all".obs;
   @override
   void onInit() {
     super.onInit();
@@ -198,6 +208,29 @@ class MyAppOintmentController extends GetxController {
       );
     }
   }
+
+  /// 🔹 Filtered list
+  List<Appointment> get filteredAppointments {
+    final list = myAppointment.value.data?.appointments ?? [];
+
+    if (selectedStatus.value == "all") return list;
+
+    return list
+        .where(
+          (e) => e.status?.toLowerCase() == selectedStatus.value.toLowerCase(),
+        )
+        .toList();
+  }
+
+  /// 🔹 Count by status
+  int countByStatus(String status) {
+    final list = myAppointment.value.data?.appointments ?? [];
+    return list
+        .where((e) => e.status?.toLowerCase() == status.toLowerCase())
+        .length;
+  }
+
+  int get totalCount => myAppointment.value.data?.appointments.length ?? 0;
 
   var isLoading = false.obs;
 

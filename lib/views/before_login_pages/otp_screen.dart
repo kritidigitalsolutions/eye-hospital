@@ -20,8 +20,6 @@ class OtpScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
@@ -42,17 +40,21 @@ class OtpScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    6,
-                    (index) => OtpTextField(
-                      index: index,
-                      controller: controller.otpControllers[index],
-                      focusNode: controller.focusNodes[index],
-                      onChanged: (value) =>
-                          controller.onOtpChanged(value, index),
-                      onBackspace: controller.handleBackspace, // ← naya
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Row(
+                    spacing: 5,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      6,
+                      (index) => OtpTextField(
+                        index: index,
+                        controller: controller.otpControllers[index],
+                        focusNode: controller.focusNodes[index],
+                        onChanged: (value) =>
+                            controller.onOtpChanged(value, index),
+                        onBackspace: controller.handleBackspace, // ← naya
+                      ),
                     ),
                   ),
                 ),
@@ -60,12 +62,15 @@ class OtpScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 Obx(
-                  () => CustomButton(
-                    title: "Continue",
-                    isLoading: controller.isLoading.value,
-                    onPressed: () {
-                      controller.submitOtp(data);
-                    },
+                  () => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: CustomButton(
+                      title: "Continue",
+                      isLoading: controller.isLoading.value,
+                      onPressed: () {
+                        controller.submitOtp(data);
+                      },
+                    ),
                   ),
                 ),
               ],

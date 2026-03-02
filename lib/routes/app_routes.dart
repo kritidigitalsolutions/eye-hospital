@@ -32,4 +32,8 @@ abstract class AppRoutes {
   static const myCart = "/myCart";
   static const myProfile = "/myProfile";
   static const editProfile = "/editProfile";
+
+  // policy
+
+  static const policyPage = "/policyPage";
 }

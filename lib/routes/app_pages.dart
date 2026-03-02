@@ -7,6 +7,7 @@ import 'package:eye_hospital/views/after_login_pages/doctor/find_doctor_page.dar
 import 'package:eye_hospital/views/after_login_pages/doctor/my_appointment_page.dart';
 import 'package:eye_hospital/views/after_login_pages/home_screen.dart';
 import 'package:eye_hospital/views/after_login_pages/my_cart_page.dart';
+import 'package:eye_hospital/views/after_login_pages/policy/policy_page.dart';
 import 'package:eye_hospital/views/after_login_pages/profile/edit_profile_Page.dart';
 import 'package:eye_hospital/views/after_login_pages/profile/my_profile_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/checkout_page.dart';
@@ -58,5 +59,8 @@ class AppPages {
     GetPage(name: AppRoutes.myCart, page: () => MyCartPage()),
     GetPage(name: AppRoutes.myProfile, page: () => MyProfilePage()),
     GetPage(name: AppRoutes.editProfile, page: () => EditProfilePage()),
+
+    // policy
+    GetPage(name: AppRoutes.policyPage, page: () => PolicyPage()),
   ];
 }

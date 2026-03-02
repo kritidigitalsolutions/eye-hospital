@@ -1,8 +1,6 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-import 'package:eye_hospital/model/response/doctor_res/doctor_list_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
-import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
@@ -15,7 +13,7 @@ class AppointmentPage extends StatelessWidget {
 
   final controller = Get.put(AppointmentController());
 
-  final Doctor doctor = Get.arguments;
+  final data = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +26,10 @@ class AppointmentPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 45,
-                backgroundImage: AssetImage(AppImages.doctor),
+                backgroundImage: NetworkImage(data["image"]),
               ),
               const SizedBox(height: 8),
-              const Text(
-                "Pankaj Tripathi",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
+              Text(data["name"], style: text16(fontWeight: FontWeight.bold)),
 
               const SizedBox(height: 12),
 
@@ -215,7 +210,9 @@ class AppointmentPage extends StatelessWidget {
                   title: "Book Your Appointment",
                   isLoading: controller.isLoading.value,
                   onPressed: () {
-                    controller.getAppointment(doctor.id ?? '');
+                    final id = data['id'];
+                    final isNew = data["isNew"];
+                    controller.getAppointment(id, isNew);
                   },
                   borderRadius: AppDimensions.radiusExtraLarge,
                 ),

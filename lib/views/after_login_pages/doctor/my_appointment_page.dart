@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eye_hospital/data/api_response.dart';
 import 'package:eye_hospital/model/response/doctor_res/appointment_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
-import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/doctor_controller/doctor_controlles.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,54 +18,81 @@ class MyAppointmentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                "My Appointments",
-                style: text18(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text("Your Upcoming Video Consultation", style: text14()),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return; // agar already pop ho chuka hai to kuch mat karo
 
-              const SizedBox(height: 16),
+        Get.offAllNamed(AppRoutes.homeScreen); // 👈 Home page par redirect
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text(
+                  "My Appointments",
+                  style: text18(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text("Your Upcoming Physical Consultation", style: text14()),
 
-              Expanded(
-                child: Obx(() {
-                  final response = ctr.myAppointment.value;
+                const SizedBox(height: 16),
 
-                  switch (response.status) {
-                    case Status.loading:
-                      return const Center(child: CircularProgressIndicator());
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Obx(
+                    () => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        filterChip("all", ctr.totalCount),
+                        filterChip("cancelled", ctr.countByStatus("cancelled")),
+                        filterChip("confirmed", ctr.countByStatus("confirmed")),
+                        filterChip("pending", ctr.countByStatus("pending")),
+                        filterChip("completed", ctr.countByStatus("completed")),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
 
-                    case Status.error:
-                      return Center(
-                        child: Text(response.message ?? "Something went wrong"),
-                      );
+                Expanded(
+                  child: Obx(() {
+                    final response = ctr.myAppointment.value;
 
-                    case Status.completed:
-                      final appointments = response.data?.appointments ?? [];
+                    switch (response.status) {
+                      case Status.loading:
+                        return buildShimmerList();
 
-                      if (appointments.isEmpty) {
-                        return const Center(
-                          child: Text("No appointments found"),
+                      case Status.error:
+                        return Center(
+                          child: Text(
+                            response.message ?? "Something went wrong",
+                          ),
                         );
-                      }
 
-                      return ListView.builder(
-                        itemCount: appointments.length,
-                        itemBuilder: (context, index) {
-                          return appointmentCard(appointments[index]);
-                        },
-                      );
-                  }
-                }),
-              ),
-            ],
+                      case Status.completed:
+                        final appointments = ctr.filteredAppointments;
+
+                        if (appointments.isEmpty) {
+                          return const Center(
+                            child: Text("No appointments found"),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: appointments.length,
+                          itemBuilder: (context, index) {
+                            return appointmentCard(appointments[index]);
+                          },
+                        );
+                    }
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -162,17 +190,71 @@ class MyAppointmentsPage extends StatelessWidget {
             /// Doctor Image
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.secondary,
-              child: CircleAvatar(
-                radius: 35,
-                backgroundImage: item.doctor?.profileImage != null
-                    ? NetworkImage(item.doctor!.profileImage)
-                    : const AssetImage(AppImages.doctor) as ImageProvider,
+              backgroundColor: AppColors.grey.shade300,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: item.doctor?.profileImage ?? "",
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(strokeWidth: 1),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.person),
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget filterChip(String status, int count) {
+    return Obx(() {
+      final isSelected = ctr.selectedStatus.value == status;
+
+      return GestureDetector(
+        onTap: () {
+          ctr.selectedStatus.value = status;
+        },
+        child: Container(
+          margin: EdgeInsets.only(right: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.grey.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                status.capitalizeFirst!,
+                style: text12(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
+                ),
+              ),
+              const SizedBox(width: 6),
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: isSelected
+                    ? AppColors.white
+                    : AppColors.primary,
+                child: Text(
+                  count.toString(),
+                  style: text10(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

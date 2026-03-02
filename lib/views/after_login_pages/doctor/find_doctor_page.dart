@@ -5,8 +5,10 @@ import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
+import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/doctor_controller/doctor_controlles.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,11 +45,14 @@ class FindDoctorsPage extends StatelessWidget {
 
                 switch (status) {
                   case Status.loading:
-                    return _buildLoading();
+                    return buildShimmerList();
 
                   case Status.error:
-                    return _buildError(
+                    return buildError(
                       ctr.doctorList.value.message ?? "Something went wrong",
+                      () {
+                        ctr.searchDoctor();
+                      },
                     );
 
                   case Status.completed:
@@ -70,49 +75,6 @@ class FindDoctorsPage extends StatelessWidget {
               }),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoading() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(color: AppColors.primary),
-          const SizedBox(height: 12),
-          Text("Loading doctors...", style: text14()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildError(String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, color: Colors.red, size: 60),
-            const SizedBox(height: 12),
-            Text("Oops!", style: text18(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: text14(color: AppColors.grey),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                ctr.searchDoctor(); // call your API again
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text("Retry"),
-            ),
-          ],
         ),
       ),
     );

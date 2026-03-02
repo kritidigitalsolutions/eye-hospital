@@ -60,7 +60,7 @@ Widget statusBar(MainAxisAlignment place, String? status) {
       case "cancelled":
         return AppColors.error;
       case "confirmed":
-        return AppColors.primary;
+        return AppColors.secondary;
       default:
         return AppColors.grey;
     }
@@ -85,5 +85,33 @@ Widget statusBar(MainAxisAlignment place, String? status) {
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     ],
+  );
+}
+
+Widget buildError(String message, VoidCallback onTap) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, color: Colors.red, size: 60),
+          const SizedBox(height: 12),
+          Text("Oops!", style: text18(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: text14(color: AppColors.grey),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: onTap,
+            icon: const Icon(Icons.refresh),
+            label: Text("Retry", style: text14(fontWeight: FontWeight.w500)),
+          ),
+        ],
+      ),
+    ),
   );
 }

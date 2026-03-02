@@ -62,4 +62,21 @@ class DoctorRepo {
       rethrow;
     }
   }
+
+  Future<MyAppointmentResModelDart> rescheduleAppointment(
+    String id,
+    AppointmentRequestModel model,
+  ) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+
+      final uri = "${AppUrls.appointments}/$id/reschedule";
+      final res = await _api.postApi(uri, model.toJson());
+
+      return MyAppointmentResModelDart.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

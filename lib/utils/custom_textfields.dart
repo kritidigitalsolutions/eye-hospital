@@ -76,9 +76,7 @@ class OtpTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 55,
-      height: 55,
+    return Expanded(
       child: TextField(
         controller: controller,
         focusNode: focusNode,
@@ -86,7 +84,7 @@ class OtpTextField extends StatelessWidget {
         textAlign: TextAlign.center,
         maxLength: 1,
         autofocus: index == 0, // pehla box auto focus
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: text18(fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           counterText: "",
           border: OutlineInputBorder(

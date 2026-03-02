@@ -48,7 +48,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [menuIconButton(context), SizedBox(width: 12)],
+        actions: [
+          customIconButton(icon: Icons.notifications_outlined),
+          menuIconButton(context),
+          SizedBox(width: 12),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -406,6 +410,8 @@ Widget menuIconButton(BuildContext context) {
         Get.toNamed(AppRoutes.supportPage);
       } else if (value == "logout") {
         showConfirmDialog(context);
+      } else if (value == "aboutUs") {
+        Get.toNamed(AppRoutes.policyPage);
       }
     },
     color: AppColors.white,
@@ -467,6 +473,16 @@ Widget menuIconButton(BuildContext context) {
             const Icon(Icons.support_agent, size: 18),
             const SizedBox(width: 8),
             Text("Support", style: text14()),
+          ],
+        ),
+      ),
+      PopupMenuItem(
+        value: "aboutUs",
+        child: Row(
+          children: [
+            const Icon(Icons.help_outline, size: 18),
+            const SizedBox(width: 8),
+            Text("About Us", style: text14()),
           ],
         ),
       ),

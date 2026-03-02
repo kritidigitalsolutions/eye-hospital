@@ -1,5 +1,6 @@
 import 'package:eye_hospital/model/response/doctor_res/appointment_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
+import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
@@ -94,22 +95,37 @@ class AppointmentDetailPage extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     /// Reschedule Button
-                    customOutlineButton(text: "Reschedule", onPressed: () {}),
-
-                    const SizedBox(height: 12),
-
-                    /// Cancel Button
-                    Obx(
-                      () => elevatedButton(
-                        text: "Cancel Appointment",
+                    if (appointment.status?.toLowerCase() != "completed") ...[
+                      customOutlineButton(
+                        text: "Reschedule",
                         onPressed: () {
-                          ctr.cancelAppointment(appointment.id ?? '');
+                          Get.toNamed(
+                            AppRoutes.appointmentPage,
+                            arguments: {
+                              "id": appointment.id,
+                              "image": appointment.doctor?.profileImage,
+                              "name": appointment.doctor?.name,
+                              "isNew": false,
+                            },
+                          );
                         },
-                        isLoading: ctr.isLoading.value,
-                        background: AppColors.error,
-                        textColor: AppColors.white,
                       ),
-                    ),
+
+                      const SizedBox(height: 12),
+
+                      /// Cancel Button
+                      Obx(
+                        () => elevatedButton(
+                          text: "Cancel Appointment",
+                          onPressed: () {
+                            ctr.cancelAppointment(appointment.id ?? '');
+                          },
+                          isLoading: ctr.isLoading.value,
+                          background: AppColors.error,
+                          textColor: AppColors.white,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

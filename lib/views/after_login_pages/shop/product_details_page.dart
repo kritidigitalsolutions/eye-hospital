@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
@@ -39,10 +40,13 @@ class ProductDetailsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Image.network(
-                    product.images.isNotEmpty ? product.images.first : "",
+                  CachedNetworkImage(
+                    imageUrl: product.images.isNotEmpty
+                        ? product.images.first
+                        : "",
                     height: 150,
-                    errorBuilder: (_, __, ___) =>
+
+                    errorWidget: (_, __, ___) =>
                         const Icon(Icons.image_not_supported, size: 100),
                   ),
 
@@ -101,7 +105,7 @@ class ProductDetailsPage extends StatelessWidget {
             /// Product Highlights
             sectionTitle("Product Highlights"),
             const SizedBox(height: 8),
-            ...product.highlights.map((e) => highlightText(e)).toList(),
+            ...product.highlights.map((e) => highlightText(e)),
 
             const SizedBox(height: 16),
 
@@ -171,7 +175,7 @@ class ProductDetailsPage extends StatelessWidget {
 
             /// Care Instructions
             sectionTitle("Care Instructions"),
-            ...product.careInstructions.map((e) => highlightText(e)).toList(),
+            ...product.careInstructions.map((e) => highlightText(e)),
 
             const SizedBox(height: 16),
 

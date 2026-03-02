@@ -30,4 +30,12 @@ class AppUrls {
   //-----------------------------------------------
 
   static const String product = "$baseUrl/products";
+  static const String addCart = "$baseUrl/cart/add";
+  static const String updateCart = "$baseUrl/cart/update";
+
+  //-----------------------------------------------------------
+  // policy
+  //-----------------------------------------------
+
+  static const String policy = "$baseUrl/";
 }

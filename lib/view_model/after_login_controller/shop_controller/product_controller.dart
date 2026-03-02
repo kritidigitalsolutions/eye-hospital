@@ -45,3 +45,58 @@ class ProductController extends GetxController {
     }
   }
 }
+
+//----------------------------------------------------------
+// product cart
+//------------------------------------------------------------------
+
+class ProductCartController extends GetxController {
+  final ProductRepo _repo = ProductRepo();
+
+  var isLoading = false.obs;
+
+  /// Add to cart
+  Future<void> addToCart(String productId, String quantity) async {
+    isLoading.value = true;
+    try {
+      await _repo.addCart(productId, quantity);
+
+      CustomSnakebar.success(
+        "Added to Cart",
+        "Product added to cart successfully",
+      );
+    } catch (e) {
+      CustomSnakebar.error("Error", "Failed to add product to cart");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Update cart quantity
+  Future<void> updateCartQty(String productId, String quantity) async {
+    isLoading.value = true;
+    try {
+      await _repo.updateCart(productId, quantity);
+
+      CustomSnakebar.success("Updated", "Cart updated successfully");
+    } catch (e) {
+      CustomSnakebar.error("Error", "Failed to update cart");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Remove from cart
+  Future<void> removeFromCart(String productId) async {
+    isLoading.value = true;
+    try {
+      await _repo.removeCart(productId);
+
+      CustomSnakebar.success("Removed", "Product removed from cart");
+    } catch (e) {
+      CustomSnakebar.error("Error", "Failed to remove product from cart");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}

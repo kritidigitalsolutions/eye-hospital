@@ -171,8 +171,7 @@ Widget customOutlineButton({
 Widget customIconButton({
   required IconData icon,
   VoidCallback? onPressed,
-  Color backgroundColor = Colors.white,
-  Color iconColor = Colors.black,
+  Color iconColor = AppColors.black,
   double size = 40,
   double iconSize = 20,
   double borderRadius = 12,
@@ -180,7 +179,7 @@ Widget customIconButton({
   return IconButton(
     padding: EdgeInsets.all(0),
     onPressed: onPressed, // can be null
-    icon: Icon(icon),
+    icon: Icon(icon, color: iconColor),
     iconSize: iconSize,
     color: iconColor,
   );

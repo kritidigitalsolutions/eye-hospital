@@ -18,4 +18,42 @@ class ProductRepo {
       rethrow;
     }
   }
+
+  // cart items
+
+  Future<void> addCart(String id, String count) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+      await _api.postApi(AppUrls.addCart, {"productId": id, "quantity": count});
+      // return ProductResModelDart.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateCart(String id, String count) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+      await _api.postApi(AppUrls.updateCart, {
+        "productId": id,
+        "quantity": count,
+      });
+      // return ProductResModelDart.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeCart(String id) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+      await _api.deleteApi(AppUrls.updateCart, {"productId": id});
+      // return ProductResModelDart.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

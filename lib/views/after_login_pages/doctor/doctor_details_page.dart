@@ -147,7 +147,12 @@ class DoctorProfilePage extends StatelessWidget {
                       onPressed: () {
                         Get.toNamed(
                           AppRoutes.appointmentPage,
-                          arguments: doctor,
+                          arguments: {
+                            "id": doctor.id,
+                            "image": doctor.profileImage,
+                            "name": doctor.name,
+                            "isNew": true,
+                          },
                         );
                       },
                     ),

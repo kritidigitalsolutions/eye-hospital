@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eye_hospital/data/api_response.dart';
 import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
+import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/shop_controller/product_controller.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -101,14 +104,25 @@ class _ProductPageState extends State<ProductPage> {
               const SizedBox(height: 16),
 
               /// Grid Products
-              /// Grid Products
               Expanded(
                 child: Obx(() {
                   final status = ctr.productList.value.status;
 
                   switch (status) {
                     case Status.loading:
-                      return const Center(child: CircularProgressIndicator());
+                      return GridView.builder(
+                        itemCount: 6,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.90,
+                            ),
+                        itemBuilder: (context, index) {
+                          return shimmerProductCard();
+                        },
+                      );
 
                     case Status.error:
                       return Center(
@@ -122,21 +136,26 @@ class _ProductPageState extends State<ProductPage> {
                       final products = ctr.filteredProducts;
 
                       if (products.isEmpty) {
-                        return const Center(child: Text("No products found"));
+                        return buildError("No product found", () {
+                          ctr.fetchProduct();
+                        });
                       }
 
-                      return GridView.builder(
-                        itemCount: products.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 12,
-                              crossAxisSpacing: 12,
-                              childAspectRatio: 0.90,
-                            ),
-                        itemBuilder: (context, index) {
-                          return productCard(products[index]);
-                        },
+                      return RefreshIndicator(
+                        onRefresh: ctr.fetchProduct,
+                        child: GridView.builder(
+                          itemCount: products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 0.90,
+                              ),
+                          itemBuilder: (context, index) {
+                            return productCard(products[index]);
+                          },
+                        ),
                       );
                   }
                 }),
@@ -170,10 +189,11 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   child: AspectRatio(
                     aspectRatio: 1.5,
-                    child: Image.network(
-                      item.images.isNotEmpty ? item.images.first : "",
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => AspectRatio(
+                    child: CachedNetworkImage(
+                      imageUrl: item.images.isNotEmpty ? item.images.first : "",
+                      fit: BoxFit.cover,
+
+                      errorWidget: (_, __, ___) => AspectRatio(
                         aspectRatio: 1.5,
                         child: Container(
                           color: AppColors.grey.shade300,

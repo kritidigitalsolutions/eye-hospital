@@ -1,8 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../../repo/checkout_repo.dart';
 
 class CheckoutController extends GetxController {
-  // Shipping controllers
+
+  final CheckoutRepo _repo = CheckoutRepo();
+
+  // ================= Shipping controllers =================
   final fullName = TextEditingController();
   final lastName = TextEditingController();
   final address = TextEditingController();
@@ -12,21 +16,57 @@ class CheckoutController extends GetxController {
   final country = TextEditingController();
   final phone = TextEditingController();
 
-  // Payment controllers
+  // ================= Payment controllers =================
   final cardNumber = TextEditingController();
   final expiry = TextEditingController();
   final cvc = TextEditingController();
   final cardName = TextEditingController();
   final promoCode = TextEditingController();
 
-  // UI state
+  // ================= UI state =================
   RxBool saveInfo = true.obs;
-  RxInt selectedPayment = 0.obs; // 0-card,1-paypal,2-apple,3-cod
+  RxInt selectedPayment = 0.obs;
   RxInt quantity = 1.obs;
 
+  // 🔥 ADD THIS (for loading state)
+  RxBool isLoading = false.obs;
+
   void increaseQty() => quantity.value++;
+
   void decreaseQty() {
     if (quantity.value > 1) quantity.value--;
+  }
+
+  // 🔥 ADD THIS METHOD (API Call)
+  Future<void> submitOrder() async {
+    try {
+      isLoading.value = true;
+
+      await _repo.submitOrder(
+        firstName: fullName.text,
+        lastName: lastName.text,
+        address: address.text,
+        city: city.text,
+        zip: zip.text,
+        state: state.text,
+        country: country.text,
+        phone: phone.text,
+        paymentMethod: selectedPayment.value,
+        cardNumber: cardNumber.text,
+        expiry: expiry.text,
+        cvc: cvc.text,
+        cardName: cardName.text,
+        promoCode: promoCode.text,
+        quantity: quantity.value,
+      );
+
+      Get.snackbar("Success", "Order Placed Successfully");
+
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override

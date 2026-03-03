@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../../view_model/after_login_controller/cart_controller/cart_controller.dart';
+import '../../../view_model/after_login_controller/profile_controller/profile_controller.dart';
+
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
 
@@ -21,6 +24,8 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final ctr = Get.put(ProductController());
+  final profileCtr = Get.put(EditProfileController());
+  final CartController cartCtr = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +55,23 @@ class _ProductPageState extends State<ProductPage> {
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      Text(
-                        "Ashish",
-                        style: text16(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                      Obx(
+                            () => Text(
+                          profileCtr.name.value,
+                          // "Ashish",
+                          style: text16(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                       ),
+                      // Text(
+                      //   "Ashish",
+                      //   style: text16(
+                      //     fontWeight: FontWeight.bold,
+                      //     color: AppColors.textPrimary,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -214,9 +229,18 @@ class _ProductPageState extends State<ProductPage> {
                     padding: const EdgeInsets.all(12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Icon(FontAwesomeIcons.cartPlus, size: 18),
-                        Icon(Icons.favorite_border, size: 22),
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.shopping_cart_outlined),
+                          onPressed: () {
+                            cartCtr.addToCart(
+                              productId: "69a17a076c7e9ab6d37721f5",
+                              quantity: 2,
+                              selectedColor: "Black",
+                            );
+                          },
+                        ),
+                        const Icon(Icons.favorite_border, size: 22),
                       ],
                     ),
                   ),

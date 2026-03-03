@@ -33,7 +33,7 @@ class OtpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Enter the 4-digit code we just\nsent to your number",
+                  "Enter the 6-digit code we just\nsent to your number",
                   textAlign: TextAlign.center,
                   style: text14(),
                 ),

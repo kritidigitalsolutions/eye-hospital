@@ -29,11 +29,17 @@ class CheckoutPage extends StatelessWidget {
               const SizedBox(height: 16),
               orderSummaryCard(),
               const SizedBox(height: 20),
-              CustomButton(
-                title: 'Confirm Order',
-                onPressed: () {
-                  Get.toNamed(AppRoutes.orderDetails);
-                },
+              Obx(
+                    () => CustomButton(
+                  title: controller.isLoading.value
+                      ? "Processing..."
+                      : "Confirm Order",
+                  onPressed: controller.isLoading.value
+                      ? () {}
+                      : () {
+                    controller.submitOrder();
+                  },
+                ),
               ),
             ],
           ),

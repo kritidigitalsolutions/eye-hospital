@@ -3,14 +3,17 @@ import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
-import 'package:eye_hospital/view_model/after_login_controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../data/api_response.dart';
+import '../../model/response/cart_res/cart_res_model.dart';
+import '../../view_model/after_login_controller/cart_controller/cart_controller.dart';
 
 class MyCartPage extends StatelessWidget {
   MyCartPage({super.key});
 
-  final MyCartController ctr = Get.put(MyCartController());
+  final CartController cartCtr = Get.put(CartController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class MyCartPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.shopping_cart, color: AppColors.grey),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     "My Cart",
                     style: text18(
@@ -44,16 +47,29 @@ class MyCartPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              /// List
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  ctr.initCount(5);
-                  return likedProductCard(index);
-                },
-              ),
+              /// Cart List From API
+              Obx(() {
+                if (cartCtr.cartData.value.status == Status.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+
+                if (cartCtr.cartData.value.data == null ||
+                    cartCtr.cartData.value.data!.items.isEmpty) {
+                  return const Center(child: Text("Cart is empty"));
+                }
+
+                final items = cartCtr.cartData.value.data!.items;
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return likedProductCard(index);
+                  },
+                );
+              }),
             ],
           ),
         ),
@@ -61,7 +77,11 @@ class MyCartPage extends StatelessWidget {
     );
   }
 
+  /// Product Card
   Widget likedProductCard(int index) {
+    final item = cartCtr.cartData.value.data!.items[index];
+    final product = item.product;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(12),
@@ -75,6 +95,7 @@ class MyCartPage extends StatelessWidget {
       ),
       child: Row(
         children: [
+          /// Image
           Expanded(
             flex: 1,
             child: Container(
@@ -83,7 +104,16 @@ class MyCartPage extends StatelessWidget {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Image.asset(AppImages.frame, fit: BoxFit.contain),
+              child: product?.images != null &&
+                  product!.images!.isNotEmpty
+                  ? Image.network(
+                product.images!.first,
+                fit: BoxFit.contain,
+              )
+                  : Image.asset(
+                AppImages.frame,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
 
@@ -95,14 +125,18 @@ class MyCartPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Product Name
                 Text(
-                  "Classic Round Frame",
+                  product?.name ?? "",
                   style: text15(fontWeight: FontWeight.bold),
                 ),
+
+                /// Category (optional dynamic)
                 Text(
-                  "Eyeglass Frame",
+                  product?.category ?? "",
                   style: text12(color: AppColors.textSecondary),
                 ),
+
                 const SizedBox(height: 6),
 
                 Row(
@@ -118,7 +152,7 @@ class MyCartPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "₹250/-",
+                        "₹${product?.discountedPrice ?? product?.price ?? 0}/-",
                         style: text12(
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.bold,
@@ -128,51 +162,63 @@ class MyCartPage extends StatelessWidget {
 
                     const SizedBox(width: 10),
 
-                    /// Quantity stepper
+                    /// Quantity (UI same, dynamic value)
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black54),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Obx(
-                        () => Row(
+                      child: Obx(() {
+                        final updatedItem = cartCtr.cartData.value.data!.items[index];
+
+                        return Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  ctr.decrease(index);
-                                },
+                            // ➖ MINUS
+                            GestureDetector(
+                              onTap: () {
+                                if ((updatedItem.quantity ?? 0) > 1) {
+                                  cartCtr.changeQuantityLocally(
+                                    index: index,
+                                    newQuantity: (updatedItem.quantity ?? 0) - 1,
+                                  );
+                                }
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Icon(Icons.remove, size: 16),
                               ),
                             ),
+
+                            // 🔢 QUANTITY TEXT
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                (updatedItem.quantity ?? 0).toString(),
+                                style: const TextStyle(fontWeight: FontWeight.w600),
                               ),
-                              child: Text(ctr.productCount[index].toString()),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  ctr.increase(index);
-                                },
+
+                            // ➕ PLUS
+                            GestureDetector(
+                              onTap: () {
+                                cartCtr.changeQuantityLocally(
+                                  index: index,
+                                  newQuantity: (updatedItem.quantity ?? 0) + 1,
+                                );
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Icon(Icons.add, size: 16),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
+                        );
+                      }),
+                    )
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -181,17 +227,26 @@ class MyCartPage extends StatelessWidget {
                         Get.toNamed(
                           AppRoutes.productDetails,
                           arguments: {
-                            "title": "Classic Spectacles",
-                            "price": "Rs. 250",
-                            "image": AppImages.on3,
+                            "product": product,
+                            "quantity": item.quantity,
+                            "selectedColor": item.selectedColor,
                           },
                         );
                       },
                       child: Text("View Details", style: text11()),
                     ),
+
                     containerLine(),
 
-                    Text("Remove", style: text11(color: AppColors.error)),
+                    GestureDetector(
+                      onTap: () {
+                        // remove API call later
+                      },
+                      child: Text(
+                        "Remove",
+                        style: text11(color: AppColors.error),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -206,7 +261,7 @@ class MyCartPage extends StatelessWidget {
     return Container(
       height: 10,
       width: 2,
-      margin: EdgeInsets.symmetric(horizontal: 7),
+      margin: const EdgeInsets.symmetric(horizontal: 7),
       decoration: BoxDecoration(color: AppColors.grey),
     );
   }

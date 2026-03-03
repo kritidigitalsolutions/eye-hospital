@@ -1,5 +1,5 @@
 class AppUrls {
-  static const String baseUrl = "http://192.168.1.7:7000/api";
+  static const String baseUrl = "http://192.168.29.185:7000/api";
 
   //--------------------------------------------------
   //auth
@@ -32,6 +32,12 @@ class AppUrls {
   static const String product = "$baseUrl/products";
   static const String addCart = "$baseUrl/cart/add";
   static const String updateCart = "$baseUrl/cart/update";
+  static const String getCart = "$baseUrl/cart/";
+
+  //-----------------------------------------------------------
+  // checkout
+  //-----------------------------------------------
+  static const String checkout = "$baseUrl/orders/place";
 
   //-----------------------------------------------------------
   // policy

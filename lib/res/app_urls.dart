@@ -1,5 +1,6 @@
 class AppUrls {
-  static const String baseUrl = "http://192.168.29.185:7000/api";
+  // static const String baseUrl = "http://192.168.29.185:7000/api";
+  static const String baseUrl = "http://192.168.1.7:7000/api";
 
   //--------------------------------------------------
   //auth
@@ -38,10 +39,34 @@ class AppUrls {
   // checkout
   //-----------------------------------------------
   static const String checkout = "$baseUrl/orders/place";
+  static const String getcheckout = "$baseUrl/orders/my";
 
   //-----------------------------------------------------------
   // policy
   //-----------------------------------------------
 
   static const String policy = "$baseUrl/";
+
+//-----------------------------------------------------------
+// bookmark
+//-----------------------------------------------
+
+  static const String addbookmark = "$baseUrl/bookmarks/add";
+  static const String getBookmark = "$baseUrl/bookmarks/";
+  static const String removeBookmark = "$baseUrl/bookmarks";
+
+  //-----------------------------------------------------------
+  // bookmark
+  //-----------------------------------------------
+
+  static const String support = "$baseUrl/bookmarks";
+
+//-----------------------------------------------------------
+// about us
+//-----------------------------------------------
+
+  static const String aboutUs = "$baseUrl/aboutus";
+  static const String privacypolicy = "$baseUrl/legal/privacy-policy";
+  static const String termsandcondition = "$baseUrl/legal/terms-conditions";
+
 }

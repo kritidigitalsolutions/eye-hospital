@@ -7,11 +7,17 @@ import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import '../../../model/response/bookmark_res/bookmark_res_model.dart';
+import '../../../view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
+import '../../../view_model/after_login_controller/cart_controller/cart_controller.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   ProductDetailsPage({super.key});
 
   final Product product = Get.arguments as Product;
+  // final bookmarkProduct bookmarkproduct = Get.arguments as bookmarkProduct;
+  final CartController cartCtr = Get.put(CartController());
+  final BookmarkController bookmarkCtr = Get.put(BookmarkController());
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +68,24 @@ class ProductDetailsPage extends StatelessWidget {
                   /// Icons row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      Icon(FontAwesomeIcons.cartPlus, size: 20),
-                      Icon(Icons.favorite_border, size: 23),
+                    children:
+                     [
+                       IconButton(
+                         icon: const Icon(FontAwesomeIcons.cartPlus, size: 20),
+                         onPressed: () {
+                           cartCtr.addToCart(
+                             productId: product.id ?? "",
+                             quantity: 2,
+                             selectedColor: "Black",
+                           );
+                         },
+                       ),
+                       IconButton(
+                         icon: const Icon(Icons.favorite_border, size: 23),
+                         onPressed: () {
+                           bookmarkCtr.addBookmark(product.id ?? "");
+                         },
+                       ),
                       Icon(Icons.share, size: 23),
                     ],
                   ),

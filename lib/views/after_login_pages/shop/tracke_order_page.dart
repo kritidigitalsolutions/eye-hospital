@@ -4,9 +4,12 @@ import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../view_model/after_login_controller/shop_controller/checkout_controller.dart';
 
 class TrackingDetailsPage extends StatelessWidget {
-  const TrackingDetailsPage({super.key});
+  TrackingDetailsPage({super.key});
+
+  final CheckoutController controller = Get.put(CheckoutController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,6 @@ class TrackingDetailsPage extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
 
-              /// Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -46,14 +48,32 @@ class TrackingDetailsPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// Cards
               Expanded(
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return trackingCard();
-                  },
-                ),
+                child: Obx(() {
+
+                  if(controller.isLoading.value){
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if(controller.orders.isEmpty){
+                    return const Center(
+                      child: Text("No Orders Found"),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: controller.orders.length,
+                    itemBuilder: (context, index) {
+
+                      final order = controller.orders[index];
+                      final item = order.items!.first;
+
+                      return trackingCard(item);
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -62,7 +82,7 @@ class TrackingDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget trackingCard() {
+  Widget trackingCard(item) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(AppRoutes.orderDetails);
@@ -80,7 +100,7 @@ class TrackingDetailsPage extends StatelessWidget {
         ),
         child: Row(
           children: [
-            /// Image box
+
             Container(
               height: 70,
               width: 70,
@@ -89,21 +109,20 @@ class TrackingDetailsPage extends StatelessWidget {
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Image.asset(
-                AppImages.frame, // add your image
+              child: Image.network(
+                item.image ?? "",
                 fit: BoxFit.contain,
               ),
             ),
 
             const SizedBox(width: 12),
 
-            /// Text content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Classic Round Frame",
+                    item.name ?? "",
                     style: text16(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 2),
@@ -123,7 +142,7 @@ class TrackingDetailsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      "₹ 250/-",
+                      "₹ ${item.price}/-",
                       style: text12(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -131,8 +150,10 @@ class TrackingDetailsPage extends StatelessWidget {
               ),
             ),
 
-            /// View details
-            Text("View Details", style: text11(fontWeight: FontWeight.w600)),
+            Text(
+              "View Details",
+              style: text11(fontWeight: FontWeight.w600),
+            ),
           ],
         ),
       ),

@@ -36,4 +36,7 @@ abstract class AppRoutes {
   // policy
 
   static const policyPage = "/policyPage";
+  static const aboutUsPage = "/aboutUsPage";
+  static const privacyPolicy = "/privacyPolicy";
+  static const termsAndCondition = "/termsAndCondition";
 }

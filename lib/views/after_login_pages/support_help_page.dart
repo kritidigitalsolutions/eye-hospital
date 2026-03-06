@@ -5,8 +5,21 @@ import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 
-class SupportHelpPage extends StatelessWidget {
+import '../../view_model/after_login_controller/support_controller/support_controller.dart';
+
+class SupportHelpPage extends StatefulWidget {
   const SupportHelpPage({super.key});
+
+  @override
+  State<SupportHelpPage> createState() => _SupportHelpPageState();
+}
+
+class _SupportHelpPageState extends State<SupportHelpPage> {
+
+  final TextEditingController queryController = TextEditingController();
+  final TextEditingController feedbackController = TextEditingController();
+
+  final SupportController controller = SupportController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +30,7 @@ class SupportHelpPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+
               const SizedBox(height: 10),
 
               /// Title
@@ -38,29 +52,32 @@ class SupportHelpPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              /// Write your query
-              Text(
-                "Write your query",
-                style: text15(fontWeight: FontWeight.bold),
+              /// Write Query
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Write your query",
+                  style: text15(fontWeight: FontWeight.bold),
+                ),
               ),
 
               const SizedBox(height: 8),
 
               TextField(
+                controller: queryController,
                 maxLines: 4,
                 maxLength: 1500,
-                buildCounter:
-                    (
-                      context, {
+                buildCounter: (
+                    context, {
                       required int currentLength,
                       required bool isFocused,
                       required int? maxLength,
                     }) {
-                      return Text(
-                        "$currentLength / $maxLength",
-                        style: text12(color: AppColors.textSecondary),
-                      );
-                    },
+                  return Text(
+                    "$currentLength / $maxLength",
+                    style: text12(color: AppColors.textSecondary),
+                  );
+                },
                 decoration: InputDecoration(
                   hintText: "Type your query...",
                   border: OutlineInputBorder(
@@ -70,7 +87,9 @@ class SupportHelpPage extends StatelessWidget {
                 ),
               ),
 
-              /// Feedback & Suggestions
+              const SizedBox(height: 16),
+
+              /// Feedback
               feedbackCard(),
 
               const SizedBox(height: 16),
@@ -80,7 +99,16 @@ class SupportHelpPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              CustomButton(title: "Submit", onPressed: () {}),
+              /// Submit Button
+              CustomButton(
+                title: "Submit",
+                onPressed: () {
+                  controller.submitQuery(
+                    context: context,
+                    query: queryController.text.trim(),
+                  );
+                },
+              ),
 
               const SizedBox(height: 16),
 
@@ -88,9 +116,10 @@ class SupportHelpPage extends StatelessWidget {
               Column(
                 children: [
                   Image.asset(AppImages.medicalV, width: 60, height: 60),
-                  SizedBox(height: 6),
-                  Text(
-                    "For medical emergencies, please visit the hospital\ndirectly or call emergency services",
+                  const SizedBox(height: 6),
+                  const Text(
+                    "For medical emergencies, please visit the hospital\n"
+                        "directly or call emergency services",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 11, color: Colors.black54),
                   ),
@@ -103,13 +132,19 @@ class SupportHelpPage extends StatelessWidget {
     );
   }
 
-  /// Contact Support Card
+  /// Contact Support
   static Widget contactSupportCard() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
-        Text("Contact Support", style: TextStyle(fontWeight: FontWeight.bold)),
+
+        Text(
+          "Contact Support",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+
         SizedBox(height: 8),
+
         Row(
           children: [
             Icon(Icons.call, size: 14),
@@ -117,7 +152,9 @@ class SupportHelpPage extends StatelessWidget {
             Text("Call us: 5264265626"),
           ],
         ),
+
         SizedBox(height: 4),
+
         Row(
           children: [
             Icon(Icons.email, size: 14),
@@ -129,36 +166,41 @@ class SupportHelpPage extends StatelessWidget {
     );
   }
 
-  /// Feedback Card
-  static Widget feedbackCard() {
+  /// Feedback
+  Widget feedbackCard() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
         const Text(
           "Feedback & Suggestions",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+
         const SizedBox(height: 4),
+
         const Text(
           "Share your experience or suggestions\nto help us improve",
           style: TextStyle(fontSize: 11, color: Colors.black54),
         ),
+
         const SizedBox(height: 8),
+
         TextField(
+          controller: feedbackController,
           maxLines: 4,
           maxLength: 1500,
-          buildCounter:
-              (
-                context, {
+          buildCounter: (
+              context, {
                 required int currentLength,
                 required bool isFocused,
                 required int? maxLength,
               }) {
-                return Text(
-                  "$currentLength / $maxLength",
-                  style: text12(color: AppColors.textSecondary),
-                );
-              },
+            return Text(
+              "$currentLength / $maxLength",
+              style: text12(color: AppColors.textSecondary),
+            );
+          },
           decoration: InputDecoration(
             hintText: "Type your suggestions...",
             border: OutlineInputBorder(

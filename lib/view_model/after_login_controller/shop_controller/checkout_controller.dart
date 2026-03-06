@@ -1,10 +1,15 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../../model/response/checkout_res/checkout_res_model.dart';
 import '../../../repo/checkout_repo.dart';
 
 class CheckoutController extends GetxController {
 
   final CheckoutRepo _repo = CheckoutRepo();
+
+  // ================= Orders =================
+  var orders = <OrderModel>[].obs;
+  RxBool isLoading = false.obs;
 
   // ================= Shipping controllers =================
   final fullName = TextEditingController();
@@ -23,23 +28,26 @@ class CheckoutController extends GetxController {
   final cardName = TextEditingController();
   final promoCode = TextEditingController();
 
-  // ================= UI state =================
+  // ================= UI State =================
   RxBool saveInfo = true.obs;
   RxInt selectedPayment = 0.obs;
   RxInt quantity = 1.obs;
 
-  // 🔥 ADD THIS (for loading state)
-  RxBool isLoading = false.obs;
-
-  void increaseQty() => quantity.value++;
-
-  void decreaseQty() {
-    if (quantity.value > 1) quantity.value--;
+  // ================= Quantity =================
+  void increaseQty() {
+    quantity.value++;
   }
 
-  // 🔥 ADD THIS METHOD (API Call)
+  void decreaseQty() {
+    if (quantity.value > 1) {
+      quantity.value--;
+    }
+  }
+
+  // ================= Submit Order =================
   Future<void> submitOrder() async {
     try {
+
       isLoading.value = true;
 
       await _repo.submitOrder(
@@ -62,15 +70,52 @@ class CheckoutController extends GetxController {
 
       Get.snackbar("Success", "Order Placed Successfully");
 
+      // 🔥 Refresh Orders After Order Placed
+      fetchOrders();
+
     } catch (e) {
+
       Get.snackbar("Error", e.toString());
+
     } finally {
+
       isLoading.value = false;
+
     }
+  }
+
+  // ================= Fetch Orders =================
+  Future<void> fetchOrders() async {
+
+    try {
+
+      isLoading.value = true;
+
+      final data = await _repo.getMyOrders();
+
+      orders.value = data;
+
+    } catch (e) {
+
+      Get.snackbar("Error", e.toString());
+
+    } finally {
+
+      isLoading.value = false;
+
+    }
+  }
+
+  // ================= Lifecycle =================
+  @override
+  void onInit() {
+    super.onInit();
+    fetchOrders();
   }
 
   @override
   void onClose() {
+
     fullName.dispose();
     lastName.dispose();
     address.dispose();
@@ -84,6 +129,7 @@ class CheckoutController extends GetxController {
     cvc.dispose();
     cardName.dispose();
     promoCode.dispose();
+
     super.onClose();
   }
 }

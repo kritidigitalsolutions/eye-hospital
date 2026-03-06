@@ -1,5 +1,9 @@
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../../../routes/app_routes.dart';
 
 class PolicyPage extends StatelessWidget {
   const PolicyPage({super.key});
@@ -17,7 +21,7 @@ class PolicyPage extends StatelessWidget {
           policyList(
             title: "About Us",
             onTap: () {
-              // navigate to about page
+              Get.toNamed(AppRoutes.aboutUsPage);
             },
           ),
           const Divider(height: 1),
@@ -25,7 +29,7 @@ class PolicyPage extends StatelessWidget {
           policyList(
             title: "Privacy Policy",
             onTap: () {
-              // navigate to privacy policy page
+              Get.toNamed(AppRoutes.privacyPolicy);
             },
           ),
           const Divider(height: 1),
@@ -33,7 +37,7 @@ class PolicyPage extends StatelessWidget {
           policyList(
             title: "Terms & Conditions",
             onTap: () {
-              // navigate to terms page
+              Get.toNamed(AppRoutes.termsAndCondition);
             },
           ),
           const Divider(height: 1),

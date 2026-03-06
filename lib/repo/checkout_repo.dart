@@ -2,6 +2,7 @@ import 'package:eye_hospital/res/app_urls.dart';
 
 import '../data/network/network_api_service.dart';
 import '../model/request/checkOut_req_model/checkout_req_model.dart';
+import '../model/response/checkout_res/checkout_res_model.dart';
 import '../utils/hive_service/hive_service.dart';
 
 class CheckoutRepo {
@@ -24,34 +25,86 @@ class CheckoutRepo {
     required String promoCode,
     required int quantity,
   }) async {
+
     try {
+
       final token = HiveService.getToken();
       _api.setToken(token ?? '');
 
-      final body = {
-        "first_name": firstName,
-        "last_name": lastName,
-        "address": address,
-        "city": city,
-        "zip": zip,
-        "state": state,
-        "country": country,
-        "phone": phone,
-        "payment_method": paymentMethod,
-        "card_number": cardNumber,
-        "expiry_date": expiry,
-        "cvc": cvc,
-        "card_name": cardName,
-        "promo_code": promoCode,
-        "quantity": quantity,
-      };
+      /// Payment method mapping
+      String method = "cash_on_delivery";
 
+      if (paymentMethod == 0) {
+        method = "card";
+      } else if (paymentMethod == 1) {
+        method = "paypal";
+      } else if (paymentMethod == 2) {
+        method = "apple_pay";
+      } else {
+        method = "cash_on_delivery";
+      }
+      final body = {
+        "fromCart": false,
+        "items": [
+          {
+            "productId": "69a17a076c7e9ab6d37721f5",
+            "quantity": quantity,
+            "selectedColor": "Black"
+          }
+        ],
+        "shippingInfo": {
+          "fullName": firstName,
+          "lastName": lastName,
+          "address": address,
+          "city": city,
+          "zipCode": zip,
+          "state": state,
+          "country": country,
+          "phone": phone,
+          "saveForNextTime": true
+        },
+        "paymentMethod": method,
+
+        "paymentInfo": paymentMethod == 0
+            ? {
+          "cardNumber": cardNumber,
+          "expiry": expiry,
+          "cvc": cvc,
+          "cardName": cardName
+        }
+            : {},
+        "promoCode": promoCode
+      };
       final res = await _api.postApi(
         AppUrls.checkout,
         body,
       );
-
       return CheckoutResponseModel.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // -------------------------------
+  // ✅ Get cart
+  // -------------------------------
+
+  Future<List<OrderModel>> getMyOrders() async {
+    try {
+
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+
+      final res = await _api.getApi(AppUrls.getcheckout);
+
+      print("FULL API RESPONSE: $res");
+
+      List orders = res["orders"];
+
+      return orders
+          .map((order) => OrderModel.fromJson(order))
+          .toList();
+
     } catch (e) {
       rethrow;
     }

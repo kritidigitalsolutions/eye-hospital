@@ -81,7 +81,7 @@ class Product {
       description: json["description"],
       category: json["category"],
       price: json["price"],
-      discountedPrice: json["discountedPrice"],
+      discountedPrice: json["discountedPrice"] ?? json["price"] ?? 0,
       images: json["images"] == null
           ? []
           : List<String>.from(json["images"]!.map((x) => x)),

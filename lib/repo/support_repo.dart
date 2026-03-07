@@ -6,14 +6,15 @@ class SupportRepo {
 
   final _api = NetworkApiService();
 
-  Future<dynamic> sendSupportQuery(String query) async {
+  Future<dynamic> sendSupportQuery(String query,String feedback) async {
     try {
 
       final token = HiveService.getToken();
       _api.setToken(token ?? '');
 
       final body = {
-        "query": query
+        "query": query,
+        "feedback": feedback
       };
 
       final res = await _api.postApi(

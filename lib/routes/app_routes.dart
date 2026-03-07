@@ -19,6 +19,7 @@ abstract class AppRoutes {
   static const myAppointment = "/myAppointment";
   static const appointmentDetails = "/appointmentDetails";
   static const videoCall = "/videoCall";
+  static const doctorReview = "/doctorReview";
 
   // shop
 
@@ -32,6 +33,7 @@ abstract class AppRoutes {
   static const myCart = "/myCart";
   static const myProfile = "/myProfile";
   static const editProfile = "/editProfile";
+  static const productReview = "/productReview";
 
   // policy
 

@@ -97,6 +97,25 @@ class _AboutUsPageState extends State<AboutUsPage> {
 
               const SizedBox(height: 20),
 
+              /// heroSubtitle
+              if ((aboutData?['heroSubtitle'] ?? "").isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hero Subtitle",
+                      style: text15(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      aboutData!['heroSubtitle'],
+                      style:
+                      text12(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+
               /// Mission
               if ((aboutData?['mission'] ?? "").isNotEmpty)
                 Column(
@@ -128,6 +147,25 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     const SizedBox(height: 6),
                     Text(
                       aboutData!['vision'],
+                      style:
+                      text12(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+
+              /// established
+              if ((aboutData?['established'] ?? "").isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "established",
+                      style: text15(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      aboutData!['established'],
                       style:
                       text12(color: AppColors.textSecondary),
                     ),
@@ -178,12 +216,110 @@ class _AboutUsPageState extends State<AboutUsPage> {
               const SizedBox(height: 30),
 
               /// Established
-              if ((aboutData?['established'] ?? "").isNotEmpty)
-                Text(
-                  "Established: ${aboutData!['established']}",
-                  style:
-                  text12(color: AppColors.textSecondary),
+              // if ((aboutData?['established'] ?? "").isNotEmpty)
+              //   Text(
+              //     "Established: ${aboutData!['established']}",
+              //     style:
+              //     text12(color: AppColors.textSecondary),
+              //   ),
+
+              /// Team Members
+              if ((aboutData?['teamMembers'] ?? []).isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Our Team",
+                      style: text18(fontWeight: FontWeight.bold),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: aboutData!['teamMembers'].length,
+                      itemBuilder: (context, index) {
+                        final member = aboutData!['teamMembers'][index];
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
+                          ),
+
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              /// Image
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  member['image'] ?? "",
+                                  height: 70,
+                                  width: 70,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      height: 70,
+                                      width: 70,
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(Icons.person),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(width: 12),
+
+                              /// Details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    /// Name
+                                    Text(
+                                      member['name'] ?? "",
+                                      style: text15(fontWeight: FontWeight.bold),
+                                    ),
+
+                                    const SizedBox(height: 2),
+
+                                    /// Role
+                                    Text(
+                                      member['role'] ?? "",
+                                      style: text12(color: AppColors.textPrimary),
+                                    ),
+
+                                    const SizedBox(height: 6),
+
+                                    /// Bio
+                                    Text(
+                                      member['bio'] ?? "",
+                                      style: text12(color: AppColors.textSecondary),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  ],
                 ),
+
             ],
           ),
         ),

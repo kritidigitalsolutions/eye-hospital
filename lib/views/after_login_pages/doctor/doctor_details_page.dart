@@ -156,6 +156,17 @@ class DoctorProfilePage extends StatelessWidget {
                         );
                       },
                     ),
+                    const SizedBox(height: 12),
+
+                    elevatedButton(
+                      text: "Write a Review",
+                      background: AppColors.primary,
+                      textColor: AppColors.textPrimary,
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.doctorReview, arguments: doctor);
+                      },
+                    ),
+
                   ],
                 ),
               ),

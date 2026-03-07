@@ -106,6 +106,7 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
                   controller.submitQuery(
                     context: context,
                     query: queryController.text.trim(),
+                    feedback: feedbackController.text.trim(),
                   );
                 },
               ),

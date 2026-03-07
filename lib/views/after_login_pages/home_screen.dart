@@ -13,6 +13,8 @@ import 'package:eye_hospital/view_model/after_login_controller/profile_controlle
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../model/response/product_res/product_res_model.dart';
+
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
@@ -169,18 +171,71 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // Widget spectaclesCard() {
+  //   return Column(
+  //     children: [
+  //       GestureDetector(
+  //         onTap: () {
+  //           Get.toNamed(
+  //             AppRoutes.productDetails,
+  //             arguments: {
+  //               "title": "Classic Spectacles",
+  //               "price": "Rs. 250",
+  //               "image": AppImages.on3,
+  //             },
+  //           );
+  //         },
+  //         child: CircleAvatar(
+  //           radius: 35,
+  //           backgroundColor: AppColors.buttonText,
+  //           child: CircleAvatar(
+  //             backgroundColor: AppColors.white,
+  //             radius: 34,
+  //             child: Image.asset(AppImages.on3, fit: BoxFit.contain),
+  //           ),
+  //         ),
+  //       ),
+  //       SizedBox(height: 6),
+  //       Text("Frame", style: text12(fontWeight: FontWeight.w600)),
+  //     ],
+  //   );
+  // }
   Widget spectaclesCard() {
     return Column(
       children: [
         GestureDetector(
           onTap: () {
+            final dummyProduct = Product(
+              id: "dummy_id",
+              name: "Classic Spectacles",
+              price: 250,
+              discountedPrice: 250,
+              images: [AppImages.on3],
+              description: "Comfortable and stylish frames.",
+              category: "Spectacles",
+              availableColors: ["Black", "Blue"],
+              highlights: ["Lightweight", "Durable"],
+              careInstructions: ["Clean with microfiber cloth"],
+              frameDetails: FrameDetails(
+                frameType: "Full Rim",
+                frameSize: "Medium",
+                frameShape: "Rectangular",
+                gender: "Unisex",
+                frameMaterial: "Plastic",
+              ),
+              stock: 10,
+              isActive: true,
+              averageRating: 4,
+              totalReviews: 5,
+              tags: [],
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              v: 0,
+            );
+
             Get.toNamed(
               AppRoutes.productDetails,
-              arguments: {
-                "title": "Classic Spectacles",
-                "price": "Rs. 250",
-                "image": AppImages.on3,
-              },
+              arguments: dummyProduct, // Pass the Product object
             );
           },
           child: CircleAvatar(

@@ -200,6 +200,18 @@ class ProductDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            /// review section
+            sectionTitle("Reviews"),
+            const SizedBox(height: 8),
+            elevatedButton(
+              text: "Write a Review",
+              background: AppColors.primary,
+              textColor: AppColors.textPrimary,
+              onPressed: () {
+                Get.toNamed(AppRoutes.productReview, arguments: product);
+              },
+            ),
+
             /// Customer Reviews (static UI for now)
             sectionTitle("Customer Reviews"),
             const SizedBox(height: 8),

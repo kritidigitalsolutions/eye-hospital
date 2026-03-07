@@ -14,6 +14,7 @@ import 'package:eye_hospital/views/after_login_pages/shop/checkout_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/order_details.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_details_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_page.dart';
+import 'package:eye_hospital/views/after_login_pages/shop/product_review_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/tracke_order_page.dart';
 import 'package:eye_hospital/views/after_login_pages/support_help_page.dart';
 import 'package:eye_hospital/views/after_login_pages/terms_conditons_page.dart';
@@ -26,6 +27,7 @@ import 'package:eye_hospital/views/before_login_pages/user_image_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../views/after_login_pages/about_us_page.dart';
+import '../views/after_login_pages/doctor/doctor_review_page.dart';
 import '../views/after_login_pages/privacy_policy_page.dart';
 
 class AppPages {
@@ -46,6 +48,7 @@ class AppPages {
     GetPage(name: AppRoutes.doctorDetails, page: () => DoctorProfilePage()),
     GetPage(name: AppRoutes.appointmentPage, page: () => AppointmentPage()),
     GetPage(name: AppRoutes.myAppointment, page: () => MyAppointmentsPage()),
+    GetPage(name: AppRoutes.doctorReview, page: () => DoctorReviewPage()),
     GetPage(
       name: AppRoutes.appointmentDetails,
       page: () => AppointmentDetailPage(),
@@ -63,6 +66,7 @@ class AppPages {
     GetPage(name: AppRoutes.myCart, page: () => MyCartPage()),
     GetPage(name: AppRoutes.myProfile, page: () => MyProfilePage()),
     GetPage(name: AppRoutes.editProfile, page: () => EditProfilePage()),
+    GetPage(name: AppRoutes.productReview, page: () => ProductReviewPage()),
 
     // policy
     GetPage(name: AppRoutes.policyPage, page: () => PolicyPage()),

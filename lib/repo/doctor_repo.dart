@@ -79,4 +79,19 @@ class DoctorRepo {
       rethrow;
     }
   }
+///  review doctor
+  Future<dynamic> submitDoctorReview(String doctorId, Map<String, dynamic> body) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+      final url = "${AppUrls.searchDoctor}/$doctorId/review";
+      print("POST URL => $url");
+      print("BODY => $body");
+      final res = await _api.postApi(url, body);
+      return res;
+    } catch (e) {
+      print("Submit Review Repo Error: $e");
+      rethrow;
+    }
+  }
 }

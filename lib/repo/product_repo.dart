@@ -56,4 +56,27 @@ class ProductRepo {
       rethrow;
     }
   }
+/// producrt review
+
+  Future<dynamic> submitProductReview(
+      String productId, Map<String, dynamic> body) async {
+    try {
+
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+
+      final url = "${AppUrls.product}/$productId/review";
+
+      print("POST URL => $url");
+      print("BODY => $body");
+
+      final res = await _api.postApi(url, body);
+
+      return res;
+
+    } catch (e) {
+      print("Submit Review Repo Error: $e");
+      rethrow;
+    }
+  }
 }

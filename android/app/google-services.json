@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "198047996891",
+    "project_id": "eye-hospital-25ef9",
+    "storage_bucket": "eye-hospital-25ef9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:198047996891:android:1b5ea8f279a6964d2fa5fe",
+        "android_client_info": {
+          "package_name": "com.example.eye_hospital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9jkmDFNlqxq6kD9hsQhFdZv6h0Lg_JVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

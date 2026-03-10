@@ -35,6 +35,7 @@ class AppUrls {
   static const String updateCart = "$baseUrl/cart/update";
   static const String getCart = "$baseUrl/cart/";
   static const String review = "$baseUrl/products/{productId}/review";
+  static String trackOrder(String orderId) => "$baseUrl/orders/$orderId/track";
 
   //-----------------------------------------------------------
   // checkout

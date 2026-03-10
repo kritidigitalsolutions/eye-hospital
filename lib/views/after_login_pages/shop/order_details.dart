@@ -1,351 +1,282 @@
-import 'package:eye_hospital/res/app_colors.dart';
-import 'package:eye_hospital/res/app_images.dart';
-import 'package:eye_hospital/routes/app_routes.dart';
-import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import '../../../res/app_colors.dart';
+import '../../../utils/textstyle.dart';
+import '../../../view_model/after_login_controller/shop_controller/track_order_controllar.dart';
 
 class OrderDetailsPage extends StatelessWidget {
-  const OrderDetailsPage({super.key});
+  OrderDetailsPage({super.key});
+
+  final OrderController controller = Get.put(OrderController());
+  final orderId = Get.arguments?? "";
 
   @override
   Widget build(BuildContext context) {
+
+    if(orderId != null){
+      controller.getTrackOrder(orderId);
+    }
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
+      appBar: AppBar(
+        title: const Text("Order Details"),
+      ),
+      body: Obx(() {
+        if (controller.loading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final data = controller.orderData.value?.tracking;
+
+        if (data == null) {
+          return const Center(child: Text("No Data"));
+        }
+
+        return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              /// Order ID Box
+
+              /// ORDER ID
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 18,
-                ),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
-                    richText("Order ID: ", "#ORD12345"),
-                    SizedBox(height: 10),
-                    richText("Order Date: ", "25 Jan 2025"),
+                    richText("Order ID: ", data.orderId ?? ""),
+                    const SizedBox(height: 8),
+                    richText("Order Date: ", data.orderDate ?? ""),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
-              /// Product Card
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(
-                    AppRoutes.productDetails,
-                    arguments: {
-                      "title": "Classic Spectacles",
-                      "price": "Rs. 250",
-                      "image": AppImages.on3,
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.grey),
-                    color: AppColors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Image.asset(AppImages.on3, fit: BoxFit.contain),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Classic Round Frame",
-                              style: text15(fontWeight: FontWeight.bold),
-                            ),
-                            Text("Eyeglass Frame", style: text12()),
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                "₹250/-",
-                                style: text14(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text("View Details", style: text11()),
-                    ],
-                  ),
-                ),
-              ),
+              /// PRODUCT
+              if (data.items != null && data.items!.isNotEmpty)
+                productCard(data.items!.first),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
-              /// Order Status
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffE6EE4A),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(FontAwesomeIcons.boxOpen, size: 14),
-                      SizedBox(width: 6),
-                      Text("Order Status"),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-              orderStatusTimeline(),
-              const SizedBox(height: 12),
-
-              /// Expected Delivery
+              /// status of delivery
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
+                  horizontal: 12,
+                  vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: data.currentStatus == "cancelled"
+                      ? Colors.red.shade100
+                      : Colors.green.shade100,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: richText("Expected Delivery:", " 30 Jan 2025"),
-              ),
-
-              const SizedBox(height: 16),
-
-              // /// Map Image
-              // Container(
-              //   height: 180,
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(12),
-              //     color: Colors.grey.shade300,
-              //   ),
-              //   child: Image.asset("assets/map.png", fit: BoxFit.cover),
-              // ),
-              const SizedBox(height: 16),
-
-              /// Courier Details
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.grey),
-                  color: AppColors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Courier Details",
-                      style: text15(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 6),
-                    Text("Courier Partner: BlueDart"),
-                    Text("Tracking Number: BD123456789"),
-                  ],
+                child: Text(
+                  data.currentStatus?.toUpperCase() ?? "",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
+
+              /// TRACKING TIMELINE
+              orderTimeline(data),
+              const SizedBox(height: 20),
+
+              /// Expected Delivery
+              if (data.currentStatus != "delivered" && data.currentStatus != "cancelled")
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: richText(
+                    "Expected Delivery:",
+                    data.expectedDelivery ?? "-",
+                  ),
+                ),
+
+
+              /// CANCEL REASON
+              if (data.isCancelled == true)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Cancelled: ${data.cancelReason}",
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+
+              /// COURIER DETAILS
+              courierBox(data),
             ],
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
-  Widget statusRow(
-    String title,
-    String subtitle,
-    Color color, {
-    IconData icon = Icons.circle,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+  Widget productCard(item) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.grey),
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 14),
-          const SizedBox(width: 8),
+          item.image != null && item.image!.isNotEmpty
+              ? Image.network(
+            item.image!,
+            height: 70,
+            width: 70,
+            fit: BoxFit.cover,
+          )
+              : Container(
+            height: 70,
+            width: 70,
+            color: Colors.grey.shade200,
+            child: const Icon(Icons.image),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(fontSize: 11, color: Colors.black54),
-                ),
+                Text(item.name ?? "",
+                    style: text15(fontWeight: FontWeight.bold)),
+                Text(item.selectedColor ?? ""),
+                Text("₹${item.price}"),
               ],
             ),
-          ),
+          )
         ],
       ),
     );
   }
-}
 
-Widget orderStatusTimeline() {
-  return Column(
-    children: [
-      statusItem(
-        title: "Order Confirmed",
-        subtitle: "Your order has been placed successfully",
-        color: AppColors.success,
-        isLast: false,
-      ),
-      statusItem(
-        title: "Shipped",
-        subtitle: "Your order is on the way",
-        color: AppColors.success,
-        isLast: false,
-      ),
-      statusItem(
-        title: "Out for Delivery",
-        subtitle: "(Upcoming)",
-        color: AppColors.yellowGr1,
-        icon: Icons.local_shipping,
-        isLast: false,
-      ),
-      statusItem(
-        title: "Delivered",
-        subtitle: "(Pending)",
-        color: AppColors.error,
-        isLast: true,
-      ),
-    ],
-  );
-}
+  Widget orderTimeline(data) {
 
-Widget statusItem({
-  required String title,
-  required String subtitle,
-  required Color color,
-  IconData icon = Icons.circle,
-  bool isLast = false,
-}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      /// Left indicator
-      Column(
-        children: [
-          Icon(icon, color: color, size: 12),
+    final steps = data.trackingSteps;
 
-          if (!isLast) ...[
-            containerLine(),
-            containerLine(),
-            containerLine(),
-            containerLine(),
-            containerLine(),
-          ],
+    if (steps == null) return const SizedBox();
 
-          // Container(
-          //   height: 30,
-          //   width: 1,
-          //   margin: const EdgeInsets.symmetric(vertical: 4),
-          //   decoration: BoxDecoration(
-          //     border: Border(
-          //       left: BorderSide(
-          //         color: AppColors.grey,
-          //         width: 1,
-          //         style: BorderStyle.solid,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
+    return Column(
+      children: List.generate(steps.length, (index) {
 
-      const SizedBox(width: 10),
+        final step = steps[index];
 
-      /// Text
-      Expanded(
-        child: Column(
+        IconData icon;
+
+        switch(step.status){
+          case "confirmed":
+            icon = Icons.check_circle;
+            break;
+
+          case "shipped":
+            icon = Icons.local_shipping;
+            break;
+
+          case "out_for_delivery":
+            icon = Icons.delivery_dining;
+            break;
+
+          case "delivered":
+            icon = Icons.home;
+            break;
+
+          default:
+            icon = Icons.circle;
+        }
+
+        return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: text14(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 2),
-            Text(subtitle, style: text11(color: AppColors.textSecondary)),
-            const SizedBox(height: 12),
+
+            Icon(
+              icon,
+              size: 16,
+              color: step.completed == true
+                  ? Colors.green
+                  : Colors.grey,
+            ),
+
+            const SizedBox(width: 10),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Text(
+                    step.label ?? "",
+                    style: text14(fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 2),
+
+                  Text(
+                    step.description ?? "",
+                    style: text11(color: AppColors.textSecondary),
+                  ),
+
+                  const SizedBox(height: 12),
+                ],
+              ),
+            ),
           ],
-        ),
+        );
+      }),
+    );
+  }
+
+  Widget courierBox(data) {
+    final courier = data.courierDetails;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.grey),
       ),
-    ],
-  );
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Courier Details",
+              style: text15(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          Text("Partner: ${courier?.partner ?? "-"}"),
+          Text("Tracking Number: ${courier?.trackingNumber ?? "-"}"),
+        ],
+      ),
+    );
+  }
 }
 
 Widget richText(String title, String value) {
   return RichText(
     text: TextSpan(
-      style: text13(
-        color: AppColors.textSecondary,
-        fontWeight: FontWeight.w600,
-      ),
+      style: const TextStyle(color: Colors.black),
       children: [
         TextSpan(
-          text: title,
-          style: text15(
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
+            text: title,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         TextSpan(text: value),
       ],
-    ),
-  );
-}
-
-Widget containerLine() {
-  return Container(
-    height: 5,
-    width: 1,
-    margin: const EdgeInsets.symmetric(vertical: 1),
-    decoration: BoxDecoration(
-      border: Border(
-        left: BorderSide(
-          color: AppColors.grey,
-          width: 1,
-          style: BorderStyle.solid,
-        ),
-      ),
     ),
   );
 }

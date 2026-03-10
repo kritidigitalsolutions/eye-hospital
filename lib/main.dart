@@ -1,6 +1,7 @@
 import 'package:eye_hospital/routes/app_pages.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/hive_service/userdetail.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,6 +9,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await Firebase.initializeApp();
+  print("Firebase connected: ${Firebase.apps.isNotEmpty}");
 
   Hive.registerAdapter(UserDetailsAdapter());
   await Hive.openBox<UserDetails>('userBox');

@@ -70,7 +70,7 @@ class TrackingDetailsPage extends StatelessWidget {
                       final order = controller.orders[index];
                       final item = order.items!.first;
 
-                      return trackingCard(item);
+                      return trackingCard(order, item);
                     },
                   );
                 }),
@@ -82,10 +82,13 @@ class TrackingDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget trackingCard(item) {
+  Widget trackingCard(order, item) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(AppRoutes.orderDetails);
+        Get.toNamed(
+          AppRoutes.orderDetails,
+          arguments: order.orderId,
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),

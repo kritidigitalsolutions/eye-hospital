@@ -1,51 +1,58 @@
+import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../repo/support_repo.dart';
 
-class SupportController {
-
+class SupportController extends GetxController {
   final SupportRepo _repo = SupportRepo();
 
-  Future<bool> submitQuery({
-    required BuildContext context,
-    required String query,
-    required String feedback,
-  }) async {
+  final TextEditingController queryController = TextEditingController();
+  final TextEditingController feedbackController = TextEditingController();
 
-    if (query.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter your query")),
-      );
-      return false;
+  var isLoading = false.obs;
+
+  void clear() {
+    queryController.clear();
+    feedbackController.clear();
+  }
+
+  Future<void> submitQuery() async {
+    /// Validation
+    if (queryController.text.trim().isEmpty) {
+      CustomSnakebar.error("Error", "Please enter your query");
+      return;
     }
-    if (feedback.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter your feedback")),
-      );
-      return false;
+
+    if (feedbackController.text.trim().isEmpty) {
+      CustomSnakebar.error("Error", "Please enter your feedback");
+      return;
     }
 
     try {
+      isLoading.value = true;
 
-      final res = await _repo.sendSupportQuery(query,feedback);
+      final res = await _repo.sendSupportQuery(
+        queryController.text.trim(),
+        feedbackController.text.trim(),
+      );
 
       if (res['success'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(res['message'] ?? "Support ticket submitted")),
+        Get.back();
+        clear();
+        CustomSnakebar.success(
+          "Success",
+          "Your support request has been submitted successfully. Our team will get back to you soon.",
         );
-        return true;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(res['message'] ?? "Failed to submit ticket")),
+        CustomSnakebar.success(
+          "Error",
+          "Unable to submit your request at the moment. Please try again later.",
         );
-        return false;
       }
-
     } catch (e) {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Something went wrong")),
-      );
-      return false;
+      CustomSnakebar.error("Error", "Something went wrong");
+    } finally {
+      isLoading.value = false;
     }
   }
 }

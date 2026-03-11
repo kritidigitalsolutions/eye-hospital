@@ -1,6 +1,5 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
-import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
 import 'package:eye_hospital/view_model/after_login_controller/shop_controller/checkout_controller.dart';
@@ -30,15 +29,15 @@ class CheckoutPage extends StatelessWidget {
               orderSummaryCard(),
               const SizedBox(height: 20),
               Obx(
-                    () => CustomButton(
+                () => CustomButton(
                   title: controller.isLoading.value
                       ? "Processing..."
                       : "Confirm Order",
                   onPressed: controller.isLoading.value
                       ? () {}
                       : () {
-                    controller.submitOrder();
-                  },
+                          controller.submitOrder();
+                        },
                 ),
               ),
             ],

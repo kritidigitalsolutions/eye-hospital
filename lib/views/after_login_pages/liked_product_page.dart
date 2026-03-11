@@ -1,17 +1,17 @@
 import 'package:eye_hospital/res/app_colors.dart';
-import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/view_model/after_login_controller/cart_controller/cart_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../model/response/bookmark_res/bookmark_res_model.dart';
-import '../../model/response/product_res/product_res_model.dart';
+
 import '../../view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
 
 class LikedProductPage extends StatelessWidget {
   LikedProductPage({super.key});
 
-  final BookmarkController controller = Get.put(BookmarkController());
+  final BookmarkController controller = Get.find();
+  final CartController cartCtr = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class LikedProductPage extends StatelessWidget {
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: Obx(
-              () => SingleChildScrollView(
+          () => SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
@@ -51,11 +51,9 @@ class LikedProductPage extends StatelessWidget {
                 /// Loading
                 if (controller.isLoading.value)
                   const Center(child: CircularProgressIndicator())
-
                 /// Empty
                 else if (controller.bookmarks.isEmpty)
                   const Center(child: Text("No liked products"))
-
                 /// List
                 else
                   ListView.builder(
@@ -84,7 +82,11 @@ class LikedProductPage extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 14),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.yellow3],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: AppColors.grey),
           ),
@@ -152,28 +154,28 @@ class LikedProductPage extends StatelessWidget {
                         const SizedBox(width: 10),
 
                         /// Quantity UI
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black54),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                child: Text("-"),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                child: Text("1"),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                child: Text("+"),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(color: Colors.black54),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //   ),
+                        //   child: Row(
+                        //     children: const [
+                        //       Padding(
+                        //         padding: EdgeInsets.symmetric(horizontal: 8),
+                        //         child: Text("-"),
+                        //       ),
+                        //       Padding(
+                        //         padding: EdgeInsets.symmetric(horizontal: 8),
+                        //         child: Text("1"),
+                        //       ),
+                        //       Padding(
+                        //         padding: EdgeInsets.symmetric(horizontal: 8),
+                        //         child: Text("+"),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
 
@@ -196,6 +198,7 @@ class LikedProductPage extends StatelessWidget {
 
                         GestureDetector(
                           onTap: () {
+                            //  cartCtr.addToCart(productId: productId, quantity: quantity, selectedColor: selectedColor)
                             Get.toNamed(AppRoutes.myCart);
                           },
                           child: Text("Add to Cart", style: text11()),
@@ -213,8 +216,7 @@ class LikedProductPage extends StatelessWidget {
         Positioned(
           top: 10,
           right: 10,
-          child:
-          GestureDetector(
+          child: GestureDetector(
             onTap: () {
               controller.removeBookmark(product.id);
             },
@@ -223,7 +225,7 @@ class LikedProductPage extends StatelessWidget {
               backgroundColor: AppColors.error,
               child: Icon(Icons.favorite, color: AppColors.white, size: 16),
             ),
-          )
+          ),
         ),
       ],
     );

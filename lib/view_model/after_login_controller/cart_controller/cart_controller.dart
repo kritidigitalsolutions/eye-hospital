@@ -19,10 +19,7 @@ class CartController extends GetxController {
     getCart();
   }
 
-  void changeQuantityLocally({
-    required int index,
-    required int newQuantity,
-  }) {
+  void changeQuantityLocally({required int index, required int newQuantity}) {
     final items = cartData.value.data?.items;
 
     if (items == null) return;
@@ -43,6 +40,13 @@ class CartController extends GetxController {
       );
     });
   }
+
+  bool isProductInCart(String productId) {
+    final cartItems = cartData.value.data?.items ?? [];
+
+    return cartItems.any((item) => item.product?.id == productId);
+  }
+
   // ----------------------------------
   // ✅ Get Cart
   // ----------------------------------
@@ -53,10 +57,7 @@ class CartController extends GetxController {
       cartData.value = ApiResponse.completed(res);
     } catch (e) {
       cartData.value = ApiResponse.error(e.toString());
-      CustomSnakebar.error(
-        "Error",
-        "Failed to fetch cart data.",
-      );
+      CustomSnakebar.error("Error", "Failed to fetch cart data.");
     }
   }
 
@@ -78,15 +79,9 @@ class CartController extends GetxController {
 
       await getCart(); // 🔥 refresh cart
 
-      CustomSnakebar.success(
-        "Added to Cart",
-        "Product added successfully.",
-      );
+      CustomSnakebar.success("Added to Cart", "Product added successfully.");
     } catch (e) {
-      CustomSnakebar.error(
-        "Error",
-        "Unable to add product.",
-      );
+      CustomSnakebar.error("Error", "Unable to add product.");
     } finally {
       isLoading.value = false;
     }
@@ -106,16 +101,14 @@ class CartController extends GetxController {
     final items = cartData.value.data?.items ?? [];
 
     return items.fold(0, (sum, item) {
-      final price =
-          item.product?.discountedPrice ??
-              item.product?.price ??
-              0;
+      final price = item.product?.discountedPrice ?? item.product?.price ?? 0;
 
       final quantity = item.quantity ?? 0;
 
       return sum + (price * quantity);
     });
   }
+
   // ----------------------------------
   // ✅ Total Price
   // ----------------------------------
@@ -135,6 +128,18 @@ class CartController extends GetxController {
       // await getCart();
     } catch (e) {
       print("Update quantity error: $e");
+    }
+  }
+
+  // ----------------------------------
+  // ✅ Total Price
+  // ----------------------------------
+  Future<void> removeCart({required String productId}) async {
+    try {
+      await _repo.removeCart(productId: productId);
+      getCart();
+    } catch (e) {
+      print("remove cart error: $e");
     }
   }
 }

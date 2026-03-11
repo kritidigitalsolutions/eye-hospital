@@ -3,7 +3,6 @@ import '../../../repo/bookmark_repo.dart';
 import '../../../model/response/bookmark_res/bookmark_res_model.dart';
 
 class BookmarkController extends GetxController {
-
   final BookmarkRepo _repo = BookmarkRepo();
 
   RxBool isLoading = false.obs;
@@ -18,12 +17,11 @@ class BookmarkController extends GetxController {
 
       final res = await _repo.addBookmark(productId);
 
-      if(res.success == true){
+      if (res.success == true) {
         Get.snackbar("Success", res.message ?? "Added to favourites");
 
         getBookmarks(); // refresh liked list
       }
-
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
@@ -33,6 +31,10 @@ class BookmarkController extends GetxController {
 
   // -------- GET BOOKMARKS --------
 
+  bool isProductBookmark(String productId) {
+    return bookmarks.any((item) => item.product.id == productId);
+  }
+
   Future<void> getBookmarks() async {
     try {
       isLoading.value = true;
@@ -40,7 +42,6 @@ class BookmarkController extends GetxController {
       final data = await _repo.getBookmarks();
 
       bookmarks.value = data;
-
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
@@ -58,21 +59,11 @@ class BookmarkController extends GetxController {
 
   Future<void> removeBookmark(String productId) async {
     try {
+      await _repo.removeBookmark(productId);
 
-      final res = await _repo.removeBookmark(productId);
-
-      if (res.success == true) {
-
-        Get.snackbar("Removed", res.message ?? "Removed from favourites");
-
-        // refresh list
-        getBookmarks();
-
-      }
-
+      getBookmarks();
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
   }
-
 }

@@ -1,5 +1,4 @@
 import 'package:eye_hospital/res/app_colors.dart';
-import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
@@ -50,25 +49,19 @@ class TrackingDetailsPage extends StatelessWidget {
 
               Expanded(
                 child: Obx(() {
-
-                  if(controller.isLoading.value){
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
                   }
 
-                  if(controller.orders.isEmpty){
-                    return const Center(
-                      child: Text("No Orders Found"),
-                    );
+                  if (controller.orders.isEmpty) {
+                    return const Center(child: Text("No Orders Found"));
                   }
 
                   return ListView.builder(
                     itemCount: controller.orders.length,
                     itemBuilder: (context, index) {
-
                       final order = controller.orders[index];
-                      final item = order.items!.first;
+                      final item = order.items.first;
 
                       return trackingCard(order, item);
                     },
@@ -85,10 +78,7 @@ class TrackingDetailsPage extends StatelessWidget {
   Widget trackingCard(order, item) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(
-          AppRoutes.orderDetails,
-          arguments: order.orderId,
-        );
+        Get.toNamed(AppRoutes.orderDetails, arguments: order.orderId);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
@@ -103,7 +93,6 @@ class TrackingDetailsPage extends StatelessWidget {
         ),
         child: Row(
           children: [
-
             Container(
               height: 70,
               width: 70,
@@ -112,10 +101,7 @@ class TrackingDetailsPage extends StatelessWidget {
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Image.network(
-                item.image ?? "",
-                fit: BoxFit.contain,
-              ),
+              child: Image.network(item.image ?? "", fit: BoxFit.contain),
             ),
 
             const SizedBox(width: 12),
@@ -153,10 +139,7 @@ class TrackingDetailsPage extends StatelessWidget {
               ),
             ),
 
-            Text(
-              "View Details",
-              style: text11(fontWeight: FontWeight.w600),
-            ),
+            Text("View Details", style: text11(fontWeight: FontWeight.w600)),
           ],
         ),
       ),

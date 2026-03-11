@@ -5,9 +5,9 @@ import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../data/api_response.dart';
-import '../../model/response/cart_res/cart_res_model.dart';
 import '../../view_model/after_login_controller/cart_controller/cart_controller.dart';
 
 class MyCartPage extends StatelessWidget {
@@ -53,10 +53,51 @@ class MyCartPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-
                 if (cartCtr.cartData.value.data == null ||
                     cartCtr.cartData.value.data!.items.isEmpty) {
-                  return const Center(child: Text("Cart is empty"));
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+
+                      /// Lottie Animation
+                      Lottie.asset("assets/lottie/empty.json", height: 300),
+
+                      const SizedBox(height: 20),
+
+                      /// Title
+                      Text(
+                        "Your Cart is Empty",
+                        style: text16(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      /// Subtitle
+                      Text(
+                        "Looks like you haven't added\nany products yet.",
+                        textAlign: TextAlign.center,
+                        style: text12(color: AppColors.textSecondary),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// Optional Button
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.buttonPrimary,
+                        ),
+                        onPressed: () {
+                          Get.toNamed(AppRoutes.productPage);
+                        },
+                        child: Text("Start Shopping", style: text14()),
+                      ),
+                    ],
+                  );
                 }
 
                 final items = cartCtr.cartData.value.data!.items;
@@ -79,8 +120,8 @@ class MyCartPage extends StatelessWidget {
 
   /// Product Card
   Widget likedProductCard(int index) {
-    final item = cartCtr.cartData.value.data!.items[index];
-    final product = item.product;
+    final item = cartCtr.cartData.value.data?.items[index];
+    final product = item?.product;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -104,16 +145,9 @@ class MyCartPage extends StatelessWidget {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: product?.images != null &&
-                  product!.images!.isNotEmpty
-                  ? Image.network(
-                product.images!.first,
-                fit: BoxFit.contain,
-              )
-                  : Image.asset(
-                AppImages.frame,
-                fit: BoxFit.contain,
-              ),
+              child: product?.images != null && product!.images!.isNotEmpty
+                  ? Image.network(product.images!.first, fit: BoxFit.contain)
+                  : Image.asset(AppImages.frame, fit: BoxFit.contain),
             ),
           ),
 
@@ -169,7 +203,8 @@ class MyCartPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Obx(() {
-                        final updatedItem = cartCtr.cartData.value.data!.items[index];
+                        final updatedItem =
+                            cartCtr.cartData.value.data!.items[index];
 
                         return Row(
                           mainAxisSize: MainAxisSize.min,
@@ -180,7 +215,8 @@ class MyCartPage extends StatelessWidget {
                                 if ((updatedItem.quantity ?? 0) > 1) {
                                   cartCtr.changeQuantityLocally(
                                     index: index,
-                                    newQuantity: (updatedItem.quantity ?? 0) - 1,
+                                    newQuantity:
+                                        (updatedItem.quantity ?? 0) - 1,
                                   );
                                 }
                               },
@@ -192,10 +228,14 @@ class MyCartPage extends StatelessWidget {
 
                             // 🔢 QUANTITY TEXT
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: Text(
                                 (updatedItem.quantity ?? 0).toString(),
-                                style: const TextStyle(fontWeight: FontWeight.w600),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
 
@@ -215,7 +255,7 @@ class MyCartPage extends StatelessWidget {
                           ],
                         );
                       }),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -226,11 +266,12 @@ class MyCartPage extends StatelessWidget {
                       onTap: () {
                         Get.toNamed(
                           AppRoutes.productDetails,
-                          arguments: {
-                            "product": product,
-                            "quantity": item.quantity,
-                            "selectedColor": item.selectedColor,
-                          },
+                          arguments: product,
+                          //  {
+                          //   "product": product,
+                          //   // "quantity": item?.quantity,
+                          //   // "selectedColor": item?.selectedColor,
+                          // },
                         );
                       },
                       child: Text("View Details", style: text11()),
@@ -240,7 +281,7 @@ class MyCartPage extends StatelessWidget {
 
                     GestureDetector(
                       onTap: () {
-                        // remove API call later
+                        cartCtr.removeCart(productId: item?.product?.id ?? '');
                       },
                       child: Text(
                         "Remove",

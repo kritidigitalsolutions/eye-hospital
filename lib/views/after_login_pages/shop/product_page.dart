@@ -6,10 +6,10 @@ import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
 import 'package:eye_hospital/view_model/after_login_controller/shop_controller/product_controller.dart';
 import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../../view_model/after_login_controller/cart_controller/cart_controller.dart';
@@ -25,7 +25,8 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   final ctr = Get.put(ProductController());
   final profileCtr = Get.put(EditProfileController());
-  final CartController cartCtr = Get.put(CartController());
+  final CartController cartCtr = Get.find();
+  final BookmarkController bookmarkCtr = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,7 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       Obx(
-                            () => Text(
+                        () => Text(
                           profileCtr.name.value,
                           // "Ashish",
                           style: text16(
@@ -65,13 +66,6 @@ class _ProductPageState extends State<ProductPage> {
                           ),
                         ),
                       ),
-                      // Text(
-                      //   "Ashish",
-                      //   style: text16(
-                      //     fontWeight: FontWeight.bold,
-                      //     color: AppColors.textPrimary,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ],
@@ -221,30 +215,64 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ),
 
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.shopping_cart_outlined),
-                          onPressed: () {
-                            cartCtr.addToCart(
-                              productId: "69a17a076c7e9ab6d37721f5",
-                              quantity: 2,
-                              selectedColor: "Black",
+                Obx(() {
+                  final isCart = cartCtr.isProductInCart(item.id ?? '');
+                  return Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              isCart
+                                  ? Icons.shopping_cart
+                                  : Icons.shopping_cart_outlined,
+                              color: isCart ? AppColors.error : AppColors.black,
+                            ),
+                            onPressed: () {
+                              if (isCart) {
+                                cartCtr.removeCart(productId: item.id ?? '');
+                              } else {
+                                cartCtr.addToCart(
+                                  productId: item.id ?? "",
+                                  quantity: 1,
+                                  selectedColor: "Black",
+                                );
+                              }
+                            },
+                          ),
+                          Obx(() {
+                            final isBookmark = bookmarkCtr.isProductBookmark(
+                              item.id ?? '',
                             );
-                          },
-                        ),
-                        const Icon(Icons.favorite_border, size: 22),
-                      ],
+                            return IconButton(
+                              icon: Icon(
+                                color: isBookmark
+                                    ? AppColors.error
+                                    : AppColors.black,
+                                isBookmark
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                size: 23,
+                              ),
+                              onPressed: () {
+                                if (isBookmark) {
+                                  bookmarkCtr.removeBookmark(item.id ?? "");
+                                } else {
+                                  bookmarkCtr.addBookmark(item.id ?? "");
+                                }
+                              },
+                            );
+                          }),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
 

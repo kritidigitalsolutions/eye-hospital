@@ -17,7 +17,7 @@ import 'package:eye_hospital/views/after_login_pages/shop/product_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_review_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/tracke_order_page.dart';
 import 'package:eye_hospital/views/after_login_pages/support_help_page.dart';
-import 'package:eye_hospital/views/after_login_pages/terms_conditons_page.dart';
+import 'package:eye_hospital/views/after_login_pages/policy/terms_conditons_page.dart';
 import 'package:eye_hospital/views/before_login_pages/login_screen.dart';
 import 'package:eye_hospital/views/before_login_pages/onboarding_screen.dart';
 import 'package:eye_hospital/views/before_login_pages/otp_screen.dart';
@@ -26,9 +26,9 @@ import 'package:eye_hospital/views/before_login_pages/splash_screen.dart';
 import 'package:eye_hospital/views/before_login_pages/user_image_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
-import '../views/after_login_pages/about_us_page.dart';
+import '../views/after_login_pages/policy/about_us_page.dart';
 import '../views/after_login_pages/doctor/doctor_review_page.dart';
-import '../views/after_login_pages/privacy_policy_page.dart';
+import '../views/after_login_pages/policy/privacy_policy_page.dart';
 
 class AppPages {
   static final pages = [
@@ -72,6 +72,9 @@ class AppPages {
     GetPage(name: AppRoutes.policyPage, page: () => PolicyPage()),
     GetPage(name: AppRoutes.aboutUsPage, page: () => AboutUsPage()),
     GetPage(name: AppRoutes.privacyPolicy, page: () => PrivacyPolicyPage()),
-    GetPage(name: AppRoutes.termsAndCondition, page: () => TermsConditionsPage()),
+    GetPage(
+      name: AppRoutes.termsAndCondition,
+      page: () => TermsConditonsPage(),
+    ),
   ];
 }

@@ -5,9 +5,7 @@ import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import '../../../model/response/bookmark_res/bookmark_res_model.dart';
 import '../../../view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
 import '../../../view_model/after_login_controller/cart_controller/cart_controller.dart';
 
@@ -16,8 +14,8 @@ class ProductDetailsPage extends StatelessWidget {
 
   final Product product = Get.arguments as Product;
   // final bookmarkProduct bookmarkproduct = Get.arguments as bookmarkProduct;
-  final CartController cartCtr = Get.put(CartController());
-  final BookmarkController bookmarkCtr = Get.put(BookmarkController());
+  final CartController cartCtr = Get.find();
+  final BookmarkController bookmarkCtr = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -66,29 +64,57 @@ class ProductDetailsPage extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   /// Icons row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children:
-                     [
-                       IconButton(
-                         icon: const Icon(FontAwesomeIcons.cartPlus, size: 20),
-                         onPressed: () {
-                           cartCtr.addToCart(
-                             productId: product.id ?? "",
-                             quantity: 2,
-                             selectedColor: "Black",
-                           );
-                         },
-                       ),
-                       IconButton(
-                         icon: const Icon(Icons.favorite_border, size: 23),
-                         onPressed: () {
-                           bookmarkCtr.addBookmark(product.id ?? "");
-                         },
-                       ),
-                      Icon(Icons.share, size: 23),
-                    ],
-                  ),
+                  Obx(() {
+                    final isCart = cartCtr.isProductInCart(product.id ?? '');
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            isCart
+                                ? Icons.shopping_cart
+                                : Icons.shopping_cart_outlined,
+                            color: isCart ? AppColors.error : AppColors.black,
+                          ),
+                          onPressed: () {
+                            if (isCart) {
+                              cartCtr.removeCart(productId: product.id ?? '');
+                            } else {
+                              cartCtr.addToCart(
+                                productId: product.id ?? "",
+                                quantity: 1,
+                                selectedColor: "",
+                              );
+                            }
+                          },
+                        ),
+                        Obx(() {
+                          final isBookmark = bookmarkCtr.isProductBookmark(
+                            product.id ?? '',
+                          );
+                          return IconButton(
+                            icon: Icon(
+                              color: isBookmark
+                                  ? AppColors.error
+                                  : AppColors.black,
+                              isBookmark
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              size: 23,
+                            ),
+                            onPressed: () {
+                              if (isBookmark) {
+                                bookmarkCtr.removeBookmark(product.id ?? '');
+                              } else {
+                                bookmarkCtr.addBookmark(product.id ?? "");
+                              }
+                            },
+                          );
+                        }),
+                        Icon(Icons.share, size: 23),
+                      ],
+                    );
+                  }),
 
                   const SizedBox(height: 15),
 

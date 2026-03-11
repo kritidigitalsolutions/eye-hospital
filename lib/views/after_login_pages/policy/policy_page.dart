@@ -1,3 +1,4 @@
+import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -12,6 +13,7 @@ class PolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.white,
         automaticallyImplyLeading: false,
         title: Text("About Us", style: text16(fontWeight: FontWeight.bold)),
         centerTitle: true,

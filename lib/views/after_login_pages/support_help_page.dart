@@ -4,6 +4,7 @@ import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../view_model/after_login_controller/support_controller/support_controller.dart';
 
@@ -15,11 +16,7 @@ class SupportHelpPage extends StatefulWidget {
 }
 
 class _SupportHelpPageState extends State<SupportHelpPage> {
-
-  final TextEditingController queryController = TextEditingController();
-  final TextEditingController feedbackController = TextEditingController();
-
-  final SupportController controller = SupportController();
+  final SupportController controller = Get.put(SupportController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,6 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-
               const SizedBox(height: 10),
 
               /// Title
@@ -64,20 +60,21 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
               const SizedBox(height: 8),
 
               TextField(
-                controller: queryController,
+                controller: controller.queryController,
                 maxLines: 4,
                 maxLength: 1500,
-                buildCounter: (
-                    context, {
+                buildCounter:
+                    (
+                      context, {
                       required int currentLength,
                       required bool isFocused,
                       required int? maxLength,
                     }) {
-                  return Text(
-                    "$currentLength / $maxLength",
-                    style: text12(color: AppColors.textSecondary),
-                  );
-                },
+                      return Text(
+                        "$currentLength / $maxLength",
+                        style: text12(color: AppColors.textSecondary),
+                      );
+                    },
                 decoration: InputDecoration(
                   hintText: "Type your query...",
                   border: OutlineInputBorder(
@@ -100,15 +97,14 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
               const SizedBox(height: 30),
 
               /// Submit Button
-              CustomButton(
-                title: "Submit",
-                onPressed: () {
-                  controller.submitQuery(
-                    context: context,
-                    query: queryController.text.trim(),
-                    feedback: feedbackController.text.trim(),
-                  );
-                },
+              Obx(
+                () => CustomButton(
+                  isLoading: controller.isLoading.value,
+                  title: "Submit",
+                  onPressed: () {
+                    controller.submitQuery();
+                  },
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -120,7 +116,7 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
                   const SizedBox(height: 6),
                   const Text(
                     "For medical emergencies, please visit the hospital\n"
-                        "directly or call emergency services",
+                    "directly or call emergency services",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 11, color: Colors.black54),
                   ),
@@ -138,11 +134,7 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
-
-        Text(
-          "Contact Support",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        Text("Contact Support", style: TextStyle(fontWeight: FontWeight.bold)),
 
         SizedBox(height: 8),
 
@@ -172,7 +164,6 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         const Text(
           "Feedback & Suggestions",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -188,20 +179,21 @@ class _SupportHelpPageState extends State<SupportHelpPage> {
         const SizedBox(height: 8),
 
         TextField(
-          controller: feedbackController,
+          controller: controller.feedbackController,
           maxLines: 4,
           maxLength: 1500,
-          buildCounter: (
-              context, {
+          buildCounter:
+              (
+                context, {
                 required int currentLength,
                 required bool isFocused,
                 required int? maxLength,
               }) {
-            return Text(
-              "$currentLength / $maxLength",
-              style: text12(color: AppColors.textSecondary),
-            );
-          },
+                return Text(
+                  "$currentLength / $maxLength",
+                  style: text12(color: AppColors.textSecondary),
+                );
+              },
           decoration: InputDecoration(
             hintText: "Type your suggestions...",
             border: OutlineInputBorder(

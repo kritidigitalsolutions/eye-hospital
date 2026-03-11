@@ -8,6 +8,8 @@ import 'package:eye_hospital/utils/custom_textfields.dart';
 import 'package:eye_hospital/utils/hive_service/hive_service.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
+import 'package:eye_hospital/view_model/after_login_controller/cart_controller/cart_controller.dart';
 import 'package:eye_hospital/view_model/after_login_controller/home_controller.dart';
 import 'package:eye_hospital/view_model/after_login_controller/profile_controller/profile_controller.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ class HomeScreen extends StatelessWidget {
 
   final controller = Get.put(HomeController());
   final profileCtr = Get.put(EditProfileController());
+  final cartProduct = Get.put(CartController());
+  final bookMarkCtr = Get.put(BookmarkController());
 
   @override
   Widget build(BuildContext context) {

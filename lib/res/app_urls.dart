@@ -33,7 +33,8 @@ class AppUrls {
   static const String product = "$baseUrl/products";
   static const String addCart = "$baseUrl/cart/add";
   static const String updateCart = "$baseUrl/cart/update";
-  static const String getCart = "$baseUrl/cart/";
+  static const String getCart = "$baseUrl/cart";
+  static const String removeCart = "$baseUrl/cart/remove";
   static const String review = "$baseUrl/products/{productId}/review";
   static String trackOrder(String orderId) => "$baseUrl/orders/$orderId/track";
 
@@ -49,9 +50,9 @@ class AppUrls {
 
   static const String policy = "$baseUrl/";
 
-//-----------------------------------------------------------
-// bookmark
-//-----------------------------------------------
+  //-----------------------------------------------------------
+  // bookmark
+  //-----------------------------------------------
 
   static const String addbookmark = "$baseUrl/bookmarks/add";
   static const String getBookmark = "$baseUrl/bookmarks/";
@@ -63,12 +64,11 @@ class AppUrls {
 
   static const String support = "$baseUrl/support";
 
-//-----------------------------------------------------------
-// about us
-//-----------------------------------------------
+  //-----------------------------------------------------------
+  // about us
+  //-----------------------------------------------
 
   static const String aboutUs = "$baseUrl/aboutus";
   static const String privacypolicy = "$baseUrl/legal/privacy-policy";
   static const String termsandcondition = "$baseUrl/legal/terms-conditions";
-
 }

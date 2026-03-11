@@ -24,10 +24,7 @@ class CartRepo {
         "selectedColor": selectedColor,
       };
 
-      final res = await _api.postApi(
-        AppUrls.addCart,
-        body,
-      );
+      final res = await _api.postApi(AppUrls.addCart, body);
 
       return res;
     } catch (e) {
@@ -70,10 +67,7 @@ class CartRepo {
         "selectedColor": selectedColor,
       };
 
-      final res = await _api.pacthApi(
-        AppUrls.updateCart,
-        body,
-      );
+      final res = await _api.pacthApi(AppUrls.updateCart, body);
 
       print("Update Cart Response: $res");
     } catch (e) {
@@ -81,4 +75,17 @@ class CartRepo {
     }
   }
 
+  Future<void> removeCart({required String productId}) async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+
+      final uri = "${AppUrls.removeCart}/$productId";
+      final res = await _api.deleteApi(uri, {});
+
+      print("Update Cart Response: $res");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

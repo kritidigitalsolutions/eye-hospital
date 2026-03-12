@@ -4,50 +4,35 @@ import '../res/app_urls.dart';
 import '../utils/hive_service/hive_service.dart';
 
 class BookmarkRepo {
-
   final _api = NetworkApiService();
 
   // ---------------- ADD BOOKMARK ----------------
 
   Future<BookmarkResModel> addBookmark(String productId) async {
-
     final token = HiveService.getToken();
     _api.setToken(token ?? '');
 
-    final body = {
-      "productId": productId
-    };
+    final body = {"productId": productId};
 
-    final res = await _api.postApi(
-      AppUrls.addbookmark,
-      body,
-    );
+    final res = await _api.postApi(AppUrls.addbookmark, body);
 
     return BookmarkResModel.fromJson(res);
   }
 
   // ---------------- GET BOOKMARKS ----------------
 
-  Future<List<BookmarkModel>> getBookmarks() async {
-
+  Future<BookmarkResModel> getBookmarks() async {
     final token = HiveService.getToken();
     _api.setToken(token ?? '');
 
-    final res = await _api.getApi(
-      AppUrls.getBookmark,
-    );
+    final res = await _api.getApi(AppUrls.getBookmark);
 
-    List list = res["bookmarks"];
-
-    return list.map((e) => BookmarkModel.fromJson(e)).toList();
+    return BookmarkResModel.fromJson(res);
   }
 
   // ---------------- REMOVE BOOKMARK ----------------
 
-  // ---------------- REMOVE BOOKMARK ----------------
-
   Future<BookmarkResModel> removeBookmark(String productId) async {
-
     final token = HiveService.getToken();
     _api.setToken(token ?? '');
 
@@ -58,5 +43,4 @@ class BookmarkRepo {
 
     return BookmarkResModel.fromJson(res);
   }
-
 }

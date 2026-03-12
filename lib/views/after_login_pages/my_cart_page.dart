@@ -3,6 +3,7 @@ import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -20,101 +21,113 @@ class MyCartPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              /// Title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart, color: AppColors.grey),
-                  const SizedBox(width: 8),
-                  Text(
-                    "My Cart",
-                    style: text18(
-                      color: AppColors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+        child: Column(
+          children: [
+            /// Title
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.shopping_cart, color: AppColors.grey),
+                const SizedBox(width: 8),
+                Text(
+                  "My Cart",
+                  style: text18(
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                "Review your selected items",
-                style: text12(color: AppColors.textSecondary),
-              ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Review your selected items",
+              style: text12(color: AppColors.textSecondary),
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              /// Cart List From API
-              Obx(() {
-                if (cartCtr.cartData.value.status == Status.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            /// Cart List From API
+            Obx(() {
+              if (cartCtr.cartData.value.status == Status.loading) {
+                return buildShimmerList();
+              }
 
-                if (cartCtr.cartData.value.data == null ||
-                    cartCtr.cartData.value.data!.items.isEmpty) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 40),
-
-                      /// Lottie Animation
-                      Lottie.asset("assets/lottie/empty.json", height: 300),
-
-                      const SizedBox(height: 20),
-
-                      /// Title
-                      Text(
-                        "Your Cart is Empty",
-                        style: text16(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-
-                      const SizedBox(height: 6),
-
-                      /// Subtitle
-                      Text(
-                        "Looks like you haven't added\nany products yet.",
-                        textAlign: TextAlign.center,
-                        style: text12(color: AppColors.textSecondary),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      /// Optional Button
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.buttonPrimary,
-                        ),
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.productPage);
-                        },
-                        child: Text("Start Shopping", style: text14()),
-                      ),
-                    ],
-                  );
-                }
-
-                final items = cartCtr.cartData.value.data!.items;
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    return likedProductCard(index);
-                  },
+              if (cartCtr.cartData.value.data == null ||
+                  cartCtr.cartData.value.data!.items.isEmpty) {
+                return RefreshIndicator(
+                  onRefresh: () => cartCtr.getCart(),
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [emptyCart()],
+                  ),
                 );
-              }),
-            ],
-          ),
+              }
+
+              final items = cartCtr.cartData.value.data!.items;
+
+              return Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () => cartCtr.getCart(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return likedProductCard(index);
+                    },
+                  ),
+                ),
+              );
+            }),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget emptyCart() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 40),
+
+        /// Lottie Animation
+        Lottie.asset(AppImages.empty, height: 300),
+
+        const SizedBox(height: 20),
+
+        /// Title
+        Text(
+          "Your Cart is Empty",
+          style: text16(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+
+        const SizedBox(height: 6),
+
+        /// Subtitle
+        Text(
+          "Looks like you haven't added\nany products yet.",
+          textAlign: TextAlign.center,
+          style: text12(color: AppColors.textSecondary),
+        ),
+
+        const SizedBox(height: 20),
+
+        /// Optional Button
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.buttonPrimary,
+          ),
+          onPressed: () {
+            Get.toNamed(AppRoutes.productPage);
+          },
+          child: Text("Start Shopping", style: text14()),
+        ),
+      ],
     );
   }
 
@@ -145,8 +158,8 @@ class MyCartPage extends StatelessWidget {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: product?.images != null && product!.images!.isNotEmpty
-                  ? Image.network(product.images!.first, fit: BoxFit.contain)
+              child: product?.images != null && product!.images.isNotEmpty
+                  ? Image.network(product.images.first, fit: BoxFit.contain)
                   : Image.asset(AppImages.frame, fit: BoxFit.contain),
             ),
           ),
@@ -267,11 +280,6 @@ class MyCartPage extends StatelessWidget {
                         Get.toNamed(
                           AppRoutes.productDetails,
                           arguments: product,
-                          //  {
-                          //   "product": product,
-                          //   // "quantity": item?.quantity,
-                          //   // "selectedColor": item?.selectedColor,
-                          // },
                         );
                       },
                       child: Text("View Details", style: text11()),

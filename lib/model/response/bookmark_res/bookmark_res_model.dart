@@ -1,64 +1,35 @@
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
+
 class BookmarkResModel {
-
   bool? success;
-  String? message;
+  final List<BookmarkItem> bookmarks;
 
-  BookmarkResModel({
-    this.success,
-    this.message,
-  });
+  BookmarkResModel({this.success, required this.bookmarks});
 
   factory BookmarkResModel.fromJson(Map<String, dynamic> json) {
     return BookmarkResModel(
       success: json["success"],
-      message: json["message"],
+      bookmarks: json["bookmarks"] == null
+          ? []
+          : List<BookmarkItem>.from(
+              json["bookmarks"].map((x) => BookmarkItem.fromJson(x)),
+            ),
     );
   }
 }
 
+class BookmarkItem {
+  final String? id;
+  final Product? product;
 
-class BookmarkModel {
-  final String id;
-  final bookmarkProduct product;
+  BookmarkItem({this.id, this.product});
 
-  BookmarkModel({
-    required this.id,
-    required this.product,
-  });
-
-  factory BookmarkModel.fromJson(Map<String, dynamic> json) {
-    return BookmarkModel(
+  factory BookmarkItem.fromJson(Map<String, dynamic> json) {
+    return BookmarkItem(
       id: json["_id"],
-      product: bookmarkProduct.fromJson(json["product"]),
-    );
-  }
-}
-
-class bookmarkProduct {
-  final String id;
-  final String name;
-  final String category;
-  final int price;
-  final int discountedPrice;
-  final List<String> images;
-
-  bookmarkProduct({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.discountedPrice,
-    required this.images,
-  });
-
-  factory bookmarkProduct.fromJson(Map<String, dynamic> json) {
-    return bookmarkProduct(
-      id: json["_id"],
-      name: json["name"],
-      category: json["category"],
-      price: json["price"],
-      discountedPrice: json["discountedPrice"] ?? json["price"] ?? 0,
-      images: List<String>.from(json["images"]),
+      product: json["product"] == null
+          ? null
+          : Product.fromJson(json["product"]),
     );
   }
 }

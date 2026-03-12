@@ -20,4 +20,8 @@ class AppImages {
   static const String lens = "${home}lens.png";
   static const String frame = "${home}frame.png";
   static const String medicalV = "${home}medial_V.jpg";
+
+  // lottie
+
+  static const String empty = "assets/lottie/empty.json";
 }

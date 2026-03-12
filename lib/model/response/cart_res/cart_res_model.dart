@@ -1,52 +1,39 @@
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
+
 class CartResModel {
-  bool? success;
-  List<CartItem> items = [];
-  int? total;
+  final bool? success;
+  final List<CartItem> items;
+  final int? total;
 
-  CartResModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
+  CartResModel({this.success, required this.items, this.total});
 
-    if (json['items'] != null) {
-      items = (json['items'] as List)
-          .map((e) => CartItem.fromJson(e))
-          .toList();
-    }
-
-    total = json['total'];
+  factory CartResModel.fromJson(Map<String, dynamic> json) {
+    return CartResModel(
+      success: json['success'],
+      total: json['total'],
+      items: json["items"] == null
+          ? []
+          : List<CartItem>.from(json["items"].map((x) => CartItem.fromJson(x))),
+    );
   }
 }
 
 class CartItem {
-  CastProduct? product;
-  int? quantity;
-  String? selectedColor;
+  final Product? product;
+  final int? quantity;
+  final String? selectedColor;
+  final String? id;
 
-  CartItem.fromJson(Map<String, dynamic> json) {
-    product = json['product'] != null
-        ? CastProduct.fromJson(json['product'])
-        : null;
+  CartItem({this.product, this.quantity, this.selectedColor, this.id});
 
-    quantity = json['quantity'];
-    selectedColor = json['selectedColor'];
-  }
-}
-
-class CastProduct {
-  String? id;
-  String? name;
-  String? category;
-  int? price;
-  int? discountedPrice;
-  List<String>? images;
-
-  CastProduct.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    name = json['name'];
-    category = json['category'];
-    price = json['price'];
-    discountedPrice = json['discountedPrice'];
-    images = json['images'] != null
-        ? List<String>.from(json['images'])
-        : [];
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      product: json["product"] == null
+          ? null
+          : Product.fromJson(json["product"]),
+      quantity: json["quantity"],
+      selectedColor: json["selectedColor"],
+      id: json["_id"],
+    );
   }
 }

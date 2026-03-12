@@ -1,3 +1,4 @@
+import 'package:eye_hospital/data/api_response.dart';
 import 'package:get/get.dart';
 import '../../../repo/bookmark_repo.dart';
 import '../../../model/response/bookmark_res/bookmark_res_model.dart';
@@ -7,7 +8,7 @@ class BookmarkController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  RxList<BookmarkModel> bookmarks = <BookmarkModel>[].obs;
+  var bookmarks = ApiResponse<BookmarkResModel>.loading().obs;
 
   // -------- ADD BOOKMARK --------
 
@@ -18,8 +19,6 @@ class BookmarkController extends GetxController {
       final res = await _repo.addBookmark(productId);
 
       if (res.success == true) {
-        Get.snackbar("Success", res.message ?? "Added to favourites");
-
         getBookmarks(); // refresh liked list
       }
     } catch (e) {
@@ -32,20 +31,19 @@ class BookmarkController extends GetxController {
   // -------- GET BOOKMARKS --------
 
   bool isProductBookmark(String productId) {
-    return bookmarks.any((item) => item.product.id == productId);
+    final bookmark = bookmarks.value.data?.bookmarks ?? [];
+    return bookmark.any((item) => item.product?.id == productId);
   }
 
   Future<void> getBookmarks() async {
     try {
-      isLoading.value = true;
+      bookmarks.value = ApiResponse.loading();
 
       final data = await _repo.getBookmarks();
 
-      bookmarks.value = data;
+      bookmarks.value = ApiResponse.completed(data);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
-      isLoading.value = false;
+      bookmarks.value = ApiResponse.error(e.toString());
     }
   }
 
@@ -59,11 +57,17 @@ class BookmarkController extends GetxController {
 
   Future<void> removeBookmark(String productId) async {
     try {
-      await _repo.removeBookmark(productId);
+      final list = bookmarks.value.data?.bookmarks ?? [];
 
-      getBookmarks();
+      /// remove locally first (smooth UI)
+      list.removeWhere((item) => item.product?.id == productId);
+
+      bookmarks.refresh();
+
+      /// call API
+      await _repo.removeBookmark(productId);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", "Failed to remove bookmark");
     }
   }
 }

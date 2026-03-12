@@ -24,8 +24,6 @@ class CartController extends GetxController {
 
     if (items == null) return;
 
-    items[index].quantity = newQuantity;
-
     cartData.refresh(); // instant UI update
 
     // debounce API call
@@ -34,8 +32,8 @@ class CartController extends GetxController {
       final item = items[index];
 
       updateQuantity(
-        productId: item.product?.id ?? "",
-        quantity: item.quantity ?? 1,
+        productId: item.id ?? "",
+        quantity: newQuantity,
         selectedColor: item.selectedColor ?? "",
       );
     });

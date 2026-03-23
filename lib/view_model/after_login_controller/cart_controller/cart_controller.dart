@@ -24,15 +24,19 @@ class CartController extends GetxController {
 
     if (items == null) return;
 
-    cartData.refresh(); // instant UI update
+    /// ✅ Replace item (immutable update)
+    items[index] = items[index].copyWith(quantity: newQuantity);
 
-    // debounce API call
+    /// ✅ Refresh UI
+    cartData.refresh();
+
+    /// ⏳ Debounce API call
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 800), () {
       final item = items[index];
 
       updateQuantity(
-        productId: item.id ?? "",
+        productId: item.product?.id ?? "",
         quantity: newQuantity,
         selectedColor: item.selectedColor ?? "",
       );
@@ -103,7 +107,7 @@ class CartController extends GetxController {
 
       final quantity = item.quantity ?? 0;
 
-      return sum + (price * quantity);
+      return sum + (price * quantity).toInt();
     });
   }
 
@@ -130,13 +134,19 @@ class CartController extends GetxController {
   }
 
   // ----------------------------------
-  // ✅ Total Price
+  // remove product
   // ----------------------------------
+
+  void removeCartLocally({required int index}) {
+    cartData.value.data?.items.removeAt(index);
+    cartData.refresh(); // 🔥 IMPORTANT (UI update)
+  }
+
   Future<void> removeCart({required String productId}) async {
     try {
       await _repo.removeCart(productId: productId);
-      getCart();
     } catch (e) {
+      getCart(); //
       print("remove cart error: $e");
     }
   }

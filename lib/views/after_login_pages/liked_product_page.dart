@@ -3,11 +3,12 @@ import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
+import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/cart_controller/cart_controller.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../view_model/after_login_controller/bookmark_controller/bookmark_controller.dart';
 
@@ -25,6 +26,8 @@ class LikedProductPage extends StatelessWidget {
         child: Obx(
           () => Column(
             children: [
+              SizedBox(height: 10),
+
               /// Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -48,11 +51,9 @@ class LikedProductPage extends StatelessWidget {
                 style: text12(color: AppColors.textSecondary),
               ),
 
-              const SizedBox(height: 16),
-
               /// Loading
-              if (controller.isLoading.value)
-                const Center(child: CircularProgressIndicator())
+              if (controller.bookmarks.value.status == Status.loading)
+                buildShimmerList()
               else if (controller.bookmarks.value.status == Status.error)
                 Center(
                   child: Column(
@@ -74,7 +75,16 @@ class LikedProductPage extends StatelessWidget {
                     onRefresh: () => controller.getBookmarks(),
                     child: ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      children: [emptyBookmark()],
+                      children: [
+                        EmptyStateWidget(
+                          animation: AppImages.empty,
+                          title: "No Bookmarks Yet",
+                          subtitle:
+                              "Items you save will appear here.\nStart exploring and bookmark products.",
+                          buttonText: "Explore Products",
+                          onTap: () => Get.toNamed(AppRoutes.productPage),
+                        ),
+                      ],
                     ),
                   ),
                 )
@@ -121,52 +131,6 @@ class LikedProductPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget emptyBookmark() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(height: 40),
-
-        /// Lottie Animation
-        Lottie.asset(AppImages.empty, height: 300),
-
-        const SizedBox(height: 20),
-
-        /// Title
-        Text(
-          "No Bookmarks Yet",
-          style: text16(
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-
-        const SizedBox(height: 6),
-
-        /// Subtitle
-        Text(
-          "Items you save will appear here.\nStart exploring and bookmark products.",
-          textAlign: TextAlign.center,
-          style: text12(color: AppColors.textSecondary),
-        ),
-
-        const SizedBox(height: 20),
-
-        /// Button
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.buttonPrimary,
-          ),
-          onPressed: () {
-            Get.toNamed(AppRoutes.productPage);
-          },
-          child: Text("Explore Products", style: text14()),
-        ),
-      ],
     );
   }
 
@@ -249,30 +213,6 @@ class LikedProductPage extends StatelessWidget {
                         ),
 
                         const SizedBox(width: 10),
-
-                        /// Quantity UI
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     border: Border.all(color: Colors.black54),
-                        //     borderRadius: BorderRadius.circular(20),
-                        //   ),
-                        //   child: Row(
-                        //     children: const [
-                        //       Padding(
-                        //         padding: EdgeInsets.symmetric(horizontal: 8),
-                        //         child: Text("-"),
-                        //       ),
-                        //       Padding(
-                        //         padding: EdgeInsets.symmetric(horizontal: 8),
-                        //         child: Text("1"),
-                        //       ),
-                        //       Padding(
-                        //         padding: EdgeInsets.symmetric(horizontal: 8),
-                        //         child: Text("+"),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                       ],
                     ),
 

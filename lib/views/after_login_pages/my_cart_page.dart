@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
+import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../data/api_response.dart';
 import '../../view_model/after_login_controller/cart_controller/cart_controller.dart';
@@ -14,7 +15,7 @@ import '../../view_model/after_login_controller/cart_controller/cart_controller.
 class MyCartPage extends StatelessWidget {
   MyCartPage({super.key});
 
-  final CartController cartCtr = Get.put(CartController(), permanent: true);
+  final CartController cartCtr = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,8 @@ class MyCartPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
+            SizedBox(height: 10),
+
             /// Title
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -44,8 +47,6 @@ class MyCartPage extends StatelessWidget {
               style: text12(color: AppColors.textSecondary),
             ),
 
-            const SizedBox(height: 16),
-
             /// Cart List From API
             Obx(() {
               if (cartCtr.cartData.value.status == Status.loading) {
@@ -54,11 +55,22 @@ class MyCartPage extends StatelessWidget {
 
               if (cartCtr.cartData.value.data == null ||
                   cartCtr.cartData.value.data!.items.isEmpty) {
-                return RefreshIndicator(
-                  onRefresh: () => cartCtr.getCart(),
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [emptyCart()],
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () => cartCtr.getCart(),
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        EmptyStateWidget(
+                          animation: AppImages.empty,
+                          title: "Your Cart is Empty",
+                          subtitle:
+                              "Looks like you haven't added anything yet.",
+                          buttonText: "Start Shopping",
+                          onTap: () => Get.toNamed(AppRoutes.productPage),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
@@ -82,52 +94,6 @@ class MyCartPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget emptyCart() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(height: 40),
-
-        /// Lottie Animation
-        Lottie.asset(AppImages.empty, height: 300),
-
-        const SizedBox(height: 20),
-
-        /// Title
-        Text(
-          "Your Cart is Empty",
-          style: text16(
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-
-        const SizedBox(height: 6),
-
-        /// Subtitle
-        Text(
-          "Looks like you haven't added\nany products yet.",
-          textAlign: TextAlign.center,
-          style: text12(color: AppColors.textSecondary),
-        ),
-
-        const SizedBox(height: 20),
-
-        /// Optional Button
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.buttonPrimary,
-          ),
-          onPressed: () {
-            Get.toNamed(AppRoutes.productPage);
-          },
-          child: Text("Start Shopping", style: text14()),
-        ),
-      ],
     );
   }
 
@@ -159,7 +125,22 @@ class MyCartPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: product?.images != null && product!.images.isNotEmpty
-                  ? Image.network(product.images.first, fit: BoxFit.contain)
+                  ? CachedNetworkImage(
+                      imageUrl: product.images.first,
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) {
+                        return Center(
+                          child: SizedBox(
+                            height: 25,
+                            width: 25,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.buttonPrimary,
+                            ),
+                          ),
+                        );
+                      },
+                    )
                   : Image.asset(AppImages.frame, fit: BoxFit.contain),
             ),
           ),
@@ -188,24 +169,37 @@ class MyCartPage extends StatelessWidget {
 
                 Row(
                   children: [
-                    /// Price pill
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffE6EE4A),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "₹${product?.discountedPrice ?? product?.price ?? 0}/-",
-                        style: text12(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
+                    Obx(() {
+                      final updatedItem =
+                          cartCtr.cartData.value.data!.items[index];
+
+                      final price =
+                          item?.product?.discountedPrice ??
+                          item?.product?.price ??
+                          0;
+
+                      final quantity = updatedItem.quantity ?? 1;
+
+                      final total = price * quantity;
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
                         ),
-                      ),
-                    ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "₹$total/-",
+                          style: text12(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }),
 
                     const SizedBox(width: 10),
 
@@ -289,10 +283,36 @@ class MyCartPage extends StatelessWidget {
 
                     GestureDetector(
                       onTap: () {
-                        cartCtr.removeCart(productId: item?.product?.id ?? '');
+                        final productId = item?.product?.id ?? '';
+
+                        /// ✅ Step 1: instant UI remove
+                        cartCtr.removeCartLocally(index: index);
+
+                        /// ✅ Step 2: background API call
+                        cartCtr.removeCart(productId: productId);
                       },
                       child: Text(
                         "Remove",
+                        style: text11(color: AppColors.error),
+                      ),
+                    ),
+                    containerLine(),
+                    GestureDetector(
+                      onTap: () {
+                        final updatedItem =
+                            cartCtr.cartData.value.data!.items[index];
+
+                        Get.toNamed(
+                          AppRoutes.checkoutPage,
+                          arguments: {
+                            "isDirect": false,
+                            "item": updatedItem,
+                            "index": index,
+                          },
+                        );
+                      },
+                      child: Text(
+                        "Buy Now",
                         style: text11(color: AppColors.error),
                       ),
                     ),

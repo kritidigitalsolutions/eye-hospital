@@ -27,11 +27,15 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
       backgroundColor: AppColors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: AppColors.white,
         title: Text(
           "Privacy Policy",
           style: text16(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        elevation: 1,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
 
       body: Obx(() {

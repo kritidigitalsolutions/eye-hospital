@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eye_hospital/data/api_response.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
 import 'package:eye_hospital/res/app_images.dart';
@@ -31,8 +33,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        elevation: 1,
         backgroundColor: AppColors.white,
-        elevation: 0,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
         leading: Padding(
           padding: EdgeInsets.all(8.0),
           child: GestureDetector(
@@ -106,16 +110,88 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            SizedBox(
-              height: 140,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return doctorCard();
-                },
-              ),
-            ),
+            Obx(() {
+              final state = controller.topDoctor.value;
+
+              if (state.status == Status.loading) {
+                return const SizedBox(
+                  height: 140,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (state.data == null || state.data!.doctors.isEmpty) {
+                return SizedBox(
+                  height: 180,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        /// Icon or Illustration
+                        Icon(
+                          Icons.medical_services_outlined,
+                          size: 40,
+                          color: AppColors.grey,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        /// Title
+                        Text(
+                          "No Doctors Available",
+                          style: text14(fontWeight: FontWeight.w600),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        /// Subtitle
+                        Text(
+                          "Please try again later or explore more doctors",
+                          style: text12(color: AppColors.textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        /// Retry Button
+                        GestureDetector(
+                          onTap: () {
+                            controller.getTopDoctor();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.primary),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              "Retry",
+                              style: text12(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final doctors = state.data!.doctors;
+
+              return SizedBox(
+                height: 140,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: doctors.length,
+                  itemBuilder: (context, index) {
+                    return doctorCard(doctors[index]); // ✅ PASS DATA
+                  },
+                ),
+              );
+            }),
             const SizedBox(height: 20),
 
             customOutlineButton(
@@ -132,16 +208,89 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 12,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(6, (index) {
-                  return spectaclesCard();
-                }),
-              ),
-            ),
+            Obx(() {
+              final state = controller.topProduct.value;
+
+              if (state.status == Status.loading) {
+                return const SizedBox(
+                  height: 140,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (state.data == null || state.data!.products.isEmpty) {
+                return SizedBox(
+                  height: 180,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        /// Icon or Illustration
+                        Icon(
+                          Icons.medical_services_outlined,
+                          size: 40,
+                          color: AppColors.grey,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        /// Title
+                        Text(
+                          "No Doctors Available",
+                          style: text14(fontWeight: FontWeight.w600),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        /// Subtitle
+                        Text(
+                          "Please try again later or explore more doctors",
+                          style: text12(color: AppColors.textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        /// Retry Button
+                        GestureDetector(
+                          onTap: () {
+                            controller.getTopDoctor();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.primary),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              "Retry",
+                              style: text12(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final products = state.data!.products;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 12,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: List.generate(products.length, (index) {
+                    final pro = products[index];
+                    return spectaclesCard(pro);
+                  }),
+                ),
+              );
+            }),
 
             const SizedBox(height: 20),
 
@@ -175,85 +324,54 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Widget spectaclesCard() {
-  //   return Column(
-  //     children: [
-  //       GestureDetector(
-  //         onTap: () {
-  //           Get.toNamed(
-  //             AppRoutes.productDetails,
-  //             arguments: {
-  //               "title": "Classic Spectacles",
-  //               "price": "Rs. 250",
-  //               "image": AppImages.on3,
-  //             },
-  //           );
-  //         },
-  //         child: CircleAvatar(
-  //           radius: 35,
-  //           backgroundColor: AppColors.buttonText,
-  //           child: CircleAvatar(
-  //             backgroundColor: AppColors.white,
-  //             radius: 34,
-  //             child: Image.asset(AppImages.on3, fit: BoxFit.contain),
-  //           ),
-  //         ),
-  //       ),
-  //       SizedBox(height: 6),
-  //       Text("Frame", style: text12(fontWeight: FontWeight.w600)),
-  //     ],
-  //   );
-  // }
-  Widget spectaclesCard() {
+  Widget spectaclesCard(Product product) {
     return Column(
       children: [
         GestureDetector(
           onTap: () {
-            final dummyProduct = Product(
-              id: "dummy_id",
-              name: "Classic Spectacles",
-              price: 250,
-              discountedPrice: 250,
-              images: [AppImages.on3],
-              description: "Comfortable and stylish frames.",
-              category: "Spectacles",
-              availableColors: ["Black", "Blue"],
-              highlights: ["Lightweight", "Durable"],
-              careInstructions: ["Clean with microfiber cloth"],
-              frameDetails: FrameDetails(
-                frameType: "Full Rim",
-                frameSize: "Medium",
-                frameShape: "Rectangular",
-                gender: "Unisex",
-                frameMaterial: "Plastic",
-              ),
-              stock: 10,
-              isActive: true,
-              averageRating: 4,
-              totalReviews: 5,
-              tags: [],
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              v: 0,
-            );
-
             Get.toNamed(
               AppRoutes.productDetails,
-              arguments: dummyProduct, // Pass the Product object
+              arguments: product, // Pass the Product object
             );
           },
           child: CircleAvatar(
             radius: 35,
             backgroundColor: AppColors.buttonText,
             child: CircleAvatar(
-              backgroundColor: AppColors.white,
               radius: 34,
-              child: Image.asset(AppImages.on3, fit: BoxFit.contain),
+              backgroundColor: AppColors.white,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: (product.images.isNotEmpty)
+                      ? product.images.first
+                      : "",
+                  width: 68,
+                  height: 68,
+                  fit: BoxFit.contain,
+
+                  /// 🔄 Loading
+                  placeholder: (context, url) => Center(
+                    child: SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+
+                  /// ❌ Error
+                  errorWidget: (context, url, error) => Container(
+                    width: 68,
+                    height: 68,
+                    color: AppColors.grey.shade300,
+                    child: const Icon(Icons.image_not_supported, size: 20),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
         SizedBox(height: 6),
-        Text("Frame", style: text12(fontWeight: FontWeight.w600)),
+        Text(product.name ?? '', style: text12(fontWeight: FontWeight.w600)),
       ],
     );
   }

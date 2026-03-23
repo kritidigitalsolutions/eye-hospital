@@ -46,9 +46,6 @@ class Product {
     required this.averageRating,
     required this.totalReviews,
     required this.tags,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
   });
 
   final FrameDetails? frameDetails;
@@ -56,20 +53,17 @@ class Product {
   final String? name;
   final String? description;
   final String? category;
-  final int? price;
-  final int? discountedPrice;
+  final num? price;
+  final num? discountedPrice;
   final List<String> images;
   final List<String> availableColors;
   final List<String> highlights;
   final List<String> careInstructions;
   final int? stock;
   final bool? isActive;
-  final int? averageRating;
-  final int? totalReviews;
+  final num? averageRating;
+  final num? totalReviews;
   final List<String> tags;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final int? v;
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
@@ -101,9 +95,6 @@ class Product {
       tags: json["tags"] == null
           ? []
           : List<String>.from(json["tags"]!.map((x) => x)),
-      createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
-      v: json["__v"],
     );
   }
 }

@@ -51,9 +51,6 @@ class Appointment {
     required this.videoCallLink,
     required this.prescription,
     required this.patientNotes,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
   });
 
   final String? id;
@@ -64,7 +61,7 @@ class Appointment {
   final String? patientType;
   final DateTime? appointmentDate;
   final String? timeSlot;
-  final int? fee;
+  final num? fee;
   final String? status;
   final String? reviewedBy;
   final DateTime? reviewedAt;
@@ -77,9 +74,6 @@ class Appointment {
   final dynamic videoCallLink;
   final dynamic prescription;
   final String? patientNotes;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final int? v;
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
     return Appointment(
@@ -106,9 +100,6 @@ class Appointment {
       videoCallLink: json["videoCallLink"],
       prescription: json["prescription"],
       patientNotes: json["patientNotes"],
-      createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
-      v: json["__v"],
     );
   }
 }
@@ -126,7 +117,7 @@ class AppointmentDoctor {
   final String? name;
   final String? specialization;
   final dynamic profileImage;
-  final int? rating;
+  final num? rating;
 
   factory AppointmentDoctor.fromJson(Map<String, dynamic> json) {
     return AppointmentDoctor(

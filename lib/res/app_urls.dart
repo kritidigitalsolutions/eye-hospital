@@ -1,6 +1,6 @@
 class AppUrls {
   // static const String baseUrl = "http://192.168.29.185:7000/api";
-  static const String baseUrl = "http://192.168.1.14:7000/api";
+  static const String baseUrl = "http://192.168.1.24:7000/api";
 
   //--------------------------------------------------
   //auth
@@ -25,6 +25,7 @@ class AppUrls {
   static const String appointmentBooked = "$baseUrl/appointments/book";
   static const String myAppointment = "$baseUrl/appointments/my";
   static const String appointments = "$baseUrl/appointments";
+  static const String topDoctor = "$baseUrl/doctors/top-doctors";
 
   //-----------------------------------------------------------
   // product
@@ -36,6 +37,7 @@ class AppUrls {
   static const String getCart = "$baseUrl/cart";
   static const String removeCart = "$baseUrl/cart/remove";
   static const String review = "$baseUrl/products/{productId}/review";
+  static const String topProduct = "$baseUrl/products/top-products";
   static String trackOrder(String orderId) => "$baseUrl/orders/$orderId/track";
 
   //-----------------------------------------------------------
@@ -71,4 +73,10 @@ class AppUrls {
   static const String aboutUs = "$baseUrl/aboutus";
   static const String privacypolicy = "$baseUrl/legal/privacy-policy";
   static const String termsandcondition = "$baseUrl/legal/terms-conditions";
+
+  //-----------------------------------------------------------
+  // Payment
+  //-----------------------------------------------
+
+  static const String createOrder = "$baseUrl/orders/place";
 }

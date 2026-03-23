@@ -138,7 +138,7 @@ class FindDoctorsPage extends StatelessWidget {
                 backgroundImage:
                     (doctor.profileImage != null &&
                         doctor.profileImage.toString().isNotEmpty)
-                    ? NetworkImage(doctor.profileImage)
+                    ? NetworkImage(doctor.profileImage ?? '')
                     : const AssetImage(AppImages.doctor) as ImageProvider,
               ),
             ),

@@ -18,7 +18,10 @@ class EditProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        elevation: 1,
         backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
         title: Text("Edit Profile", style: text18(color: AppColors.black)),
         centerTitle: true,
 

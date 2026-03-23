@@ -1,29 +1,49 @@
+import 'package:eye_hospital/data/api_response.dart';
+import 'package:eye_hospital/model/response/doctor_res/doctor_list_res_model.dart';
+import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
+import 'package:eye_hospital/repo/doctor_repo.dart';
+import 'package:eye_hospital/repo/product_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    getTopDoctor();
+    getTopProduct();
+  }
+
   final searchDoctorCtr = TextEditingController();
-  RxString userName = "".obs;
-}
 
-// ---------------------------------------------------
-// My cart
-//----------------------------------------------------
+  // top doctor
 
-class MyCartController extends GetxController {
-  RxList<int> productCount = <int>[].obs;
+  var topDoctor = ApiResponse<DoctorListResModel>.completed(null).obs;
+  final _repo = DoctorRepo();
 
-  void initCount(int length) {
-    productCount.value = List.generate(length, (index) => 1);
+  Future<void> getTopDoctor() async {
+    topDoctor.value = ApiResponse.loading();
+    try {
+      final res = await _repo.topDoctor();
+      topDoctor.value = ApiResponse.completed(res);
+    } catch (e) {
+      topDoctor.value = ApiResponse.error(e.toString());
+    }
   }
 
-  void increase(int index) {
-    productCount[index]++;
-  }
+  //==================== Top Products=========================
 
-  void decrease(int index) {
-    if (productCount[index] > 1) {
-      productCount[index]--;
+  var topProduct = ApiResponse<ProductResModelDart>.completed(null).obs;
+  final _product = ProductRepo();
+
+  Future<void> getTopProduct() async {
+    topProduct.value = ApiResponse.loading();
+    try {
+      final res = await _product.topProduct();
+      topProduct.value = ApiResponse.completed(res);
+    } catch (e) {
+      topProduct.value = ApiResponse.error(e.toString());
     }
   }
 }

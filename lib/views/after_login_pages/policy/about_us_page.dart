@@ -29,6 +29,10 @@ class _AboutUsPageState extends State<AboutUsPage> {
       appBar: AppBar(
         title: Text("About Us", style: text16(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        elevation: 1,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
 
       body: Obx(() {

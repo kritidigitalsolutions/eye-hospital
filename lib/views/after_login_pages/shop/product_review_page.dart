@@ -44,7 +44,10 @@ class _ProductReviewPageState extends State<ProductReviewPage> {
 
       if (res != null && res['success'] == true) {
         Get.back();
-        Get.snackbar("Success", res['message'] ?? "Review submitted successfully");
+        Get.snackbar(
+          "Success",
+          res['message'] ?? "Review submitted successfully",
+        );
       } else {
         Get.snackbar("Notice", res['message'] ?? "Failed to submit review");
       }
@@ -61,10 +64,15 @@ class _ProductReviewPageState extends State<ProductReviewPage> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: Text("Rate & Review", style: text16(fontWeight: FontWeight.bold)),
+        title: Text(
+          "Rate & Review",
+          style: text16(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        elevation: 1,
         backgroundColor: AppColors.white,
-        elevation: 0,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

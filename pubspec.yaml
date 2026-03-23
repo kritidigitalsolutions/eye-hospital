@@ -55,6 +55,7 @@ dependencies:
   shimmer: ^3.0.0
 
   lottie: ^3.3.2
+  flutter_cashfree_pg_sdk: ^2.2.10+48
 
 dev_dependencies:
   flutter_test:

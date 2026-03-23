@@ -36,4 +36,18 @@ class CartItem {
       id: json["_id"],
     );
   }
+
+  CartItem copyWith({
+    int? quantity,
+    String? selectedColor,
+    Product? product,
+    String? id,
+  }) {
+    return CartItem(
+      id: id ?? this.id,
+      product: product ?? this.product,
+      quantity: quantity ?? this.quantity,
+      selectedColor: selectedColor ?? this.selectedColor,
+    );
+  }
 }

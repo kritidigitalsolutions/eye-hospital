@@ -46,8 +46,8 @@ class Doctor {
   final String? id;
   final String? name;
   final String? specialization;
-  final dynamic profileImage;
-  final int? rating;
+  final String? profileImage;
+  final num? rating;
   final int? totalReviews;
   final String? about;
   final List<String> qualifications;
@@ -62,7 +62,7 @@ class Doctor {
       id: json["_id"],
       name: json["name"],
       specialization: json["specialization"],
-      profileImage: json["profileImage"],
+      profileImage: json["profileImage"].toString(),
       rating: json["rating"],
       totalReviews: json["totalReviews"],
       about: json["about"],

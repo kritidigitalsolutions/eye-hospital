@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 Widget buildShimmerList() {
   return Expanded(
     child: ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 10),
       itemCount: 8,
       itemBuilder: (context, index) {
         return _shimmerDoctorCard();

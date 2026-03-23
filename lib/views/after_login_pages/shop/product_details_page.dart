@@ -13,7 +13,6 @@ class ProductDetailsPage extends StatelessWidget {
   ProductDetailsPage({super.key});
 
   final Product product = Get.arguments as Product;
-  // final bookmarkProduct bookmarkproduct = Get.arguments as bookmarkProduct;
   final CartController cartCtr = Get.find();
   final BookmarkController bookmarkCtr = Get.find();
 
@@ -27,8 +26,18 @@ class ProductDetailsPage extends StatelessWidget {
           style: text16(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        elevation: 1,
         backgroundColor: AppColors.white,
-        elevation: 0,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.toNamed(AppRoutes.myCart);
+            },
+            icon: Icon(Icons.shopping_cart_checkout),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -65,52 +74,48 @@ class ProductDetailsPage extends StatelessWidget {
 
                   /// Icons row
                   Obx(() {
-                    final isCart = cartCtr.isProductInCart(product.id ?? '');
+                    // final isCart = cartCtr.isProductInCart(product.id ?? '');
+                    final isBookmark = bookmarkCtr.isProductBookmark(
+                      product.id ?? '',
+                    );
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        // IconButton(
+                        //   icon: Icon(
+                        //     isCart
+                        //         ? Icons.shopping_cart
+                        //         : Icons.shopping_cart_outlined,
+                        //     color: isCart ? AppColors.error : AppColors.black,
+                        //   ),
+                        //   onPressed: () {
+                        //     if (isCart) {
+                        //       cartCtr.removeCart(productId: product.id ?? '');
+                        //     } else {
+                        //       cartCtr.addToCart(
+                        //         productId: product.id ?? "",
+                        //         quantity: 1,
+                        //         selectedColor: "",
+                        //       );
+                        //     }
+                        //   },
+                        // ),
                         IconButton(
                           icon: Icon(
-                            isCart
-                                ? Icons.shopping_cart
-                                : Icons.shopping_cart_outlined,
-                            color: isCart ? AppColors.error : AppColors.black,
+                            color: isBookmark
+                                ? AppColors.error
+                                : AppColors.black,
+                            isBookmark ? Icons.favorite : Icons.favorite_border,
+                            size: 23,
                           ),
                           onPressed: () {
-                            if (isCart) {
-                              cartCtr.removeCart(productId: product.id ?? '');
+                            if (isBookmark) {
+                              bookmarkCtr.removeBookmark(product.id ?? '');
                             } else {
-                              cartCtr.addToCart(
-                                productId: product.id ?? "",
-                                quantity: 1,
-                                selectedColor: "",
-                              );
+                              bookmarkCtr.addBookmark(product.id ?? "");
                             }
                           },
                         ),
-                        Obx(() {
-                          final isBookmark = bookmarkCtr.isProductBookmark(
-                            product.id ?? '',
-                          );
-                          return IconButton(
-                            icon: Icon(
-                              color: isBookmark
-                                  ? AppColors.error
-                                  : AppColors.black,
-                              isBookmark
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              size: 23,
-                            ),
-                            onPressed: () {
-                              if (isBookmark) {
-                                bookmarkCtr.removeBookmark(product.id ?? '');
-                              } else {
-                                bookmarkCtr.addBookmark(product.id ?? "");
-                              }
-                            },
-                          );
-                        }),
                         Icon(Icons.share, size: 23),
                       ],
                     );
@@ -204,18 +209,64 @@ class ProductDetailsPage extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// Buy Now Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                elevatedButton(
-                  text: "Buy Now",
-                  background: AppColors.buttonPrimary,
-                  textColor: AppColors.textPrimary,
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.checkoutPage, arguments: product);
+            Obx(() {
+              final isCart = cartCtr.isProductInCart(product.id ?? '');
+              if (!isCart) {
+                return CustomButton(
+                  isLoading: cartCtr.isLoading.value,
+                  title: "Add To Cart",
+                  onPressed: () async {
+                    /// ✅ Step 1: Add to cart
+                    await cartCtr.addToCart(
+                      productId: product.id ?? "",
+                      quantity: 1,
+                      selectedColor: "",
+                    );
+
+                    /// ✅ Step 2: Refresh cart (IMPORTANT)
+                    await cartCtr.getCart();
+
+                    /// ✅ Step 3: Find added item index
+                    final items = cartCtr.cartData.value.data?.items ?? [];
+
+                    final index = items.indexWhere(
+                      (e) => e.product?.id == product.id,
+                    );
+
+                    if (index == -1) {
+                      Get.snackbar("Error", "Item not found in cart");
+                      return;
+                    }
+
+                    final updatedItem = items[index];
+
+                    /// ✅ Step 4: Navigate like Cart Page
+                    Get.toNamed(
+                      AppRoutes.checkoutPage,
+                      arguments: {
+                        "isDirect": false,
+                        "item": updatedItem,
+                        "index": index,
+                      },
+                    );
                   },
-                ),
-              ],
+                );
+              }
+
+              return SizedBox.shrink();
+            }),
+            const SizedBox(height: 10),
+            CustomButton(
+              title: "Buy Now",
+              onPressed: () {
+                Get.toNamed(
+                  AppRoutes.checkoutPage,
+                  arguments: {
+                    "isDirect": true,
+                    "product": product, // 👈 pass product here
+                  },
+                );
+              },
             ),
 
             const SizedBox(height: 16),

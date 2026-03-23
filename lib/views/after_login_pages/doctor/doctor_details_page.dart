@@ -1,3 +1,4 @@
+import 'package:eye_hospital/data/api_response.dart';
 import 'package:eye_hospital/model/response/doctor_res/doctor_list_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
@@ -6,6 +7,7 @@ import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/view_model/after_login_controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +15,7 @@ class DoctorProfilePage extends StatelessWidget {
   DoctorProfilePage({super.key});
 
   final Doctor doctor = Get.arguments;
+  final HomeController controller = Get.find();
 
   @override
   @override
@@ -42,7 +45,7 @@ class DoctorProfilePage extends StatelessWidget {
                       backgroundImage:
                           (doctor.profileImage != null &&
                               doctor.profileImage.toString().isNotEmpty)
-                          ? NetworkImage(doctor.profileImage)
+                          ? NetworkImage(doctor.profileImage ?? '')
                           : const AssetImage(AppImages.doctor) as ImageProvider,
                     ),
 
@@ -133,7 +136,12 @@ class DoctorProfilePage extends StatelessWidget {
                       onPressed: () {
                         Get.toNamed(
                           AppRoutes.appointmentPage,
-                          arguments: doctor,
+                          arguments: {
+                            "id": doctor.id,
+                            "image": doctor.profileImage,
+                            "name": doctor.name,
+                            "isNew": true,
+                          },
                         );
                       },
                     ),
@@ -166,7 +174,6 @@ class DoctorProfilePage extends StatelessWidget {
                         Get.toNamed(AppRoutes.doctorReview, arguments: doctor);
                       },
                     ),
-
                   ],
                 ),
               ),
@@ -176,16 +183,36 @@ class DoctorProfilePage extends StatelessWidget {
               Text("Check out other Doctors!", style: text16()),
               const SizedBox(height: 10),
 
-              SizedBox(
-                height: 140,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return doctorCard(); // make sure this widget exists
-                  },
-                ),
-              ),
+              Obx(() {
+                final state = controller.topDoctor.value;
+
+                if (state.status == Status.loading) {
+                  return const SizedBox(
+                    height: 140,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (state.data == null || state.data!.doctors.isEmpty) {
+                  return const SizedBox(
+                    height: 140,
+                    child: Center(child: Text("No doctors found")),
+                  );
+                }
+
+                final doctors = state.data!.doctors;
+
+                return SizedBox(
+                  height: 140,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: doctors.length,
+                    itemBuilder: (context, index) {
+                      return doctorCard(doctors[index]); // ✅ PASS DATA
+                    },
+                  ),
+                );
+              }),
 
               const SizedBox(height: 10),
 

@@ -50,7 +50,10 @@ class _DoctorReviewPageState extends State<DoctorReviewPage> {
 
       if (res['success'] == true) {
         Get.back();
-        Get.snackbar("Success", res['message'] ?? "Review submitted successfully!");
+        Get.snackbar(
+          "Success",
+          res['message'] ?? "Review submitted successfully!",
+        );
       } else {
         Get.snackbar("Notice", res['message'] ?? "Failed to submit review");
       }
@@ -67,10 +70,16 @@ class _DoctorReviewPageState extends State<DoctorReviewPage> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: Text("Rate & Review Doctor", style: text16(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Rate & Review Doctor",
+          style: text16(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        elevation: 1,
         backgroundColor: AppColors.white,
-        elevation: 0,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -82,8 +91,10 @@ class _DoctorReviewPageState extends State<DoctorReviewPage> {
               children: [
                 CircleAvatar(
                   radius: 35,
-                  backgroundImage: (doctor.profileImage != null && doctor.profileImage.toString().isNotEmpty)
-                      ? NetworkImage(doctor.profileImage)
+                  backgroundImage:
+                      (doctor.profileImage != null &&
+                          doctor.profileImage.toString().isNotEmpty)
+                      ? NetworkImage(doctor.profileImage ?? '')
                       : const AssetImage(AppImages.doctor) as ImageProvider,
                 ),
                 const SizedBox(width: 12),

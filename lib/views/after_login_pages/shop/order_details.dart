@@ -8,18 +8,21 @@ class OrderDetailsPage extends StatelessWidget {
   OrderDetailsPage({super.key});
 
   final OrderController controller = Get.put(OrderController());
-  final orderId = Get.arguments?? "";
+  final orderId = Get.arguments ?? "";
 
   @override
   Widget build(BuildContext context) {
-
-    if(orderId != null){
+    if (orderId != null) {
       controller.getTrackOrder(orderId);
     }
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text("Order Details"),
+        elevation: 1,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
       body: Obx(() {
         if (controller.loading.value) {
@@ -36,7 +39,6 @@ class OrderDetailsPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-
               /// ORDER ID
               Container(
                 padding: const EdgeInsets.all(14),
@@ -75,9 +77,7 @@ class OrderDetailsPage extends StatelessWidget {
                 ),
                 child: Text(
                   data.currentStatus?.toUpperCase() ?? "",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
 
@@ -86,7 +86,8 @@ class OrderDetailsPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// Expected Delivery
-              if (data.currentStatus != "delivered" && data.currentStatus != "cancelled")
+              if (data.currentStatus != "delivered" &&
+                  data.currentStatus != "cancelled")
                 Container(
                   margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.symmetric(
@@ -102,7 +103,6 @@ class OrderDetailsPage extends StatelessWidget {
                     data.expectedDelivery ?? "-",
                   ),
                 ),
-
 
               /// CANCEL REASON
               if (data.isCancelled == true)
@@ -140,48 +140,48 @@ class OrderDetailsPage extends StatelessWidget {
         children: [
           item.image != null && item.image!.isNotEmpty
               ? Image.network(
-            item.image!,
-            height: 70,
-            width: 70,
-            fit: BoxFit.cover,
-          )
+                  item.image!,
+                  height: 70,
+                  width: 70,
+                  fit: BoxFit.cover,
+                )
               : Container(
-            height: 70,
-            width: 70,
-            color: Colors.grey.shade200,
-            child: const Icon(Icons.image),
-          ),
+                  height: 70,
+                  width: 70,
+                  color: Colors.grey.shade200,
+                  child: const Icon(Icons.image),
+                ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.name ?? "",
-                    style: text15(fontWeight: FontWeight.bold)),
+                Text(
+                  item.name ?? "",
+                  style: text15(fontWeight: FontWeight.bold),
+                ),
                 Text(item.selectedColor ?? ""),
                 Text("₹${item.price}"),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget orderTimeline(data) {
-
     final steps = data.trackingSteps;
 
     if (steps == null) return const SizedBox();
 
     return Column(
       children: List.generate(steps.length, (index) {
-
         final step = steps[index];
 
         IconData icon;
 
-        switch(step.status){
+        switch (step.status) {
           case "confirmed":
             icon = Icons.check_circle;
             break;
@@ -205,13 +205,10 @@ class OrderDetailsPage extends StatelessWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Icon(
               icon,
               size: 16,
-              color: step.completed == true
-                  ? Colors.green
-                  : Colors.grey,
+              color: step.completed == true ? Colors.green : Colors.grey,
             ),
 
             const SizedBox(width: 10),
@@ -220,7 +217,6 @@ class OrderDetailsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
                     step.label ?? "",
                     style: text14(fontWeight: FontWeight.bold),
@@ -256,8 +252,7 @@ class OrderDetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Courier Details",
-              style: text15(fontWeight: FontWeight.bold)),
+          Text("Courier Details", style: text15(fontWeight: FontWeight.bold)),
           const SizedBox(height: 6),
           Text("Partner: ${courier?.partner ?? "-"}"),
           Text("Tracking Number: ${courier?.trackingNumber ?? "-"}"),
@@ -273,8 +268,9 @@ Widget richText(String title, String value) {
       style: const TextStyle(color: Colors.black),
       children: [
         TextSpan(
-            text: title,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+          text: title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         TextSpan(text: value),
       ],
     ),

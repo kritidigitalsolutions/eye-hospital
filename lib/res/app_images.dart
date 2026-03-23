@@ -24,4 +24,5 @@ class AppImages {
   // lottie
 
   static const String empty = "assets/lottie/empty.json";
+  static const String order = "assets/lottie/order.json";
 }

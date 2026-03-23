@@ -216,7 +216,11 @@ class _ProductPageState extends State<ProductPage> {
                 ),
 
                 Obx(() {
-                  final isCart = cartCtr.isProductInCart(item.id ?? '');
+                  // final isCart = cartCtr.isProductInCart(item.id ?? '');
+                  final isBookmark = bookmarkCtr.isProductBookmark(
+                    item.id ?? '',
+                  );
+
                   return Positioned(
                     top: 0,
                     left: 0,
@@ -224,50 +228,48 @@ class _ProductPageState extends State<ProductPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          /// Cart Icon
+                          // IconButton(
+                          //   icon: Icon(
+                          //     isCart
+                          //         ? Icons.shopping_cart
+                          //         : Icons.shopping_cart_outlined,
+                          //     color: isCart ? AppColors.error : AppColors.black,
+                          //   ),
+                          //   onPressed: () {
+                          //     if (isCart) {
+                          //       cartCtr.removeCart(productId: item.id ?? '');
+                          //     } else {
+                          //       cartCtr.addToCart(
+                          //         productId: item.id ?? "",
+                          //         quantity: 1,
+                          //         selectedColor: "Black",
+                          //       );
+                          //     }
+                          //   },
+                          // ),
+
+                          /// Bookmark Icon
                           IconButton(
                             icon: Icon(
-                              isCart
-                                  ? Icons.shopping_cart
-                                  : Icons.shopping_cart_outlined,
-                              color: isCart ? AppColors.error : AppColors.black,
+                              isBookmark
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isBookmark
+                                  ? AppColors.error
+                                  : AppColors.black,
+                              size: 23,
                             ),
                             onPressed: () {
-                              if (isCart) {
-                                cartCtr.removeCart(productId: item.id ?? '');
+                              if (isBookmark) {
+                                bookmarkCtr.removeBookmark(item.id ?? "");
                               } else {
-                                cartCtr.addToCart(
-                                  productId: item.id ?? "",
-                                  quantity: 1,
-                                  selectedColor: "Black",
-                                );
+                                bookmarkCtr.addBookmark(item.id ?? "");
                               }
                             },
                           ),
-                          Obx(() {
-                            final isBookmark = bookmarkCtr.isProductBookmark(
-                              item.id ?? '',
-                            );
-                            return IconButton(
-                              icon: Icon(
-                                color: isBookmark
-                                    ? AppColors.error
-                                    : AppColors.black,
-                                isBookmark
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                size: 23,
-                              ),
-                              onPressed: () {
-                                if (isBookmark) {
-                                  bookmarkCtr.removeBookmark(item.id ?? "");
-                                } else {
-                                  bookmarkCtr.addBookmark(item.id ?? "");
-                                }
-                              },
-                            );
-                          }),
                         ],
                       ),
                     ),

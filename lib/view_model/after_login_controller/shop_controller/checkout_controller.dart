@@ -4,7 +4,6 @@ import '../../../model/response/checkout_res/checkout_res_model.dart';
 import '../../../repo/checkout_repo.dart';
 
 class CheckoutController extends GetxController {
-
   final CheckoutRepo _repo = CheckoutRepo();
 
   // ================= Orders =================
@@ -33,21 +32,9 @@ class CheckoutController extends GetxController {
   RxInt selectedPayment = 0.obs;
   RxInt quantity = 1.obs;
 
-  // ================= Quantity =================
-  void increaseQty() {
-    quantity.value++;
-  }
-
-  void decreaseQty() {
-    if (quantity.value > 1) {
-      quantity.value--;
-    }
-  }
-
   // ================= Submit Order =================
   Future<void> submitOrder() async {
     try {
-
       isLoading.value = true;
 
       await _repo.submitOrder(
@@ -72,37 +59,25 @@ class CheckoutController extends GetxController {
 
       // 🔥 Refresh Orders After Order Placed
       fetchOrders();
-
     } catch (e) {
-
       Get.snackbar("Error", e.toString());
-
     } finally {
-
       isLoading.value = false;
-
     }
   }
 
   // ================= Fetch Orders =================
   Future<void> fetchOrders() async {
-
     try {
-
       isLoading.value = true;
 
       final data = await _repo.getMyOrders();
 
       orders.value = data;
-
     } catch (e) {
-
       Get.snackbar("Error", e.toString());
-
     } finally {
-
       isLoading.value = false;
-
     }
   }
 
@@ -115,7 +90,6 @@ class CheckoutController extends GetxController {
 
   @override
   void onClose() {
-
     fullName.dispose();
     lastName.dispose();
     address.dispose();

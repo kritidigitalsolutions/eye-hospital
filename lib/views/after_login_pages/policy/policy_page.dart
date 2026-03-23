@@ -17,7 +17,11 @@ class PolicyPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Text("About Us", style: text16(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        elevation: 1,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
           policyList(

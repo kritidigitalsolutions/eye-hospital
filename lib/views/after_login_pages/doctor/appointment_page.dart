@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
@@ -26,7 +27,28 @@ class AppointmentPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 45,
-                backgroundImage: NetworkImage(data["image"]),
+                backgroundColor: Colors.grey.shade200,
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: data["image"] ?? "",
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+
+                    /// 🔄 While loading
+                    placeholder: (context, url) => const Center(
+                      child: SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+
+                    /// ❌ If error / null / wrong URL
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.person, size: 40, color: Colors.grey),
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               Text(data["name"], style: text16(fontWeight: FontWeight.bold)),

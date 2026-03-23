@@ -5,44 +5,21 @@ import 'package:eye_hospital/routes/app_routes.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../model/response/doctor_res/doctor_list_res_model.dart';
 
-
-Widget doctorCard() {
+Widget doctorCard(Doctor doctor) {
   return GestureDetector(
     onTap: () {
-      final dummyDoctor = Doctor(
-        id: "dummy_dr_id",
-        name: "Dr. Smith",
-        specialization: "Eye Specialist",
-        profileImage: null,
-        rating: 5,
-        totalReviews: 120,
-        about: "Dr. Smith is a renowned Eye Specialist with over 10 years of experience in ophthalmology.",
-        qualifications: ["MBBS", "MS - Ophthalmology"],
-        experienceYears: 10,
-        consultationFees: ConsultationFees(
-          firstConsultation: Consultation(private: 500, general: 300),
-          followUpConsultation: Consultation(private: 300, general: 200),
-          fastTrackConsultation: FastTrackConsultation(standard: 800, followUp: 500),
-        ),
-        availableDays: ["Monday", "Wednesday", "Friday"],
-        availableTimeSlots: ["10:00 AM", "02:00 PM"],
-        isAvailable: true,
-      );
-
-      Get.toNamed(
-        AppRoutes.doctorDetails,
-        arguments: dummyDoctor,
-      );
+      Get.toNamed(AppRoutes.doctorDetails, arguments: doctor);
     },
     child: Container(
       width: 120,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.grey.shade200,
+        color: AppColors.grey.shade100,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -50,12 +27,35 @@ Widget doctorCard() {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundImage: AssetImage(AppImages.femaleDoctor),
+            backgroundImage:
+                (doctor.profileImage != null &&
+                    doctor.profileImage!.isNotEmpty &&
+                    doctor.profileImage != "null")
+                ? NetworkImage(doctor.profileImage!)
+                : const AssetImage(AppImages.femaleDoctor) as ImageProvider,
           ),
+
           const SizedBox(height: 6),
-          Text("Dr. Smith", style: text12(fontWeight: FontWeight.bold)),
-          Text("Eye Specialist", style: text10(color: AppColors.grey)),
+
+          /// Name
+          Text(
+            doctor.name ?? "N/A",
+            style: text12(fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          /// Specialization
+          Text(
+            doctor.specialization ?? "",
+            style: text10(color: AppColors.grey),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+
           const SizedBox(height: 4),
+
+          /// Button
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             decoration: BoxDecoration(
@@ -76,50 +76,71 @@ Widget doctorCard() {
   );
 }
 
+class EmptyStateWidget extends StatelessWidget {
+  final String animation;
+  final String title;
+  final String subtitle;
+  final String buttonText;
+  final VoidCallback? onTap;
+  final double height;
 
-// Widget doctorCard() {
-//   return GestureDetector(
-//     onTap: () {
-//       Get.toNamed(AppRoutes.doctorDetails);
-//     },
-//     child: Container(
-//       width: 120,
-//       margin: const EdgeInsets.only(right: 12),
-//       padding: const EdgeInsets.all(8),
-//       decoration: BoxDecoration(
-//         color: AppColors.grey.shade200,
-//         borderRadius: BorderRadius.circular(16),
-//       ),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min, // ✅ FIX
-//         children: [
-//           CircleAvatar(
-//             radius: 28, // slightly smaller
-//             backgroundImage: AssetImage(AppImages.femaleDoctor),
-//           ),
-//           const SizedBox(height: 6),
-//           Text("Dr. Smith", style: text12(fontWeight: FontWeight.bold)),
-//           Text("Eye Specialist", style: text10(color: AppColors.grey)),
-//           const SizedBox(height: 4),
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-//             decoration: BoxDecoration(
-//               color: AppColors.primary,
-//               borderRadius: BorderRadius.circular(AppDimensions.radius15),
-//             ),
-//             child: Center(
-//               child: Text(
-//                 "See Profile",
-//                 style: text10(),
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
+  const EmptyStateWidget({
+    super.key,
+    required this.animation,
+    required this.title,
+    required this.subtitle,
+    required this.buttonText,
+    this.onTap,
+    this.height = 300,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 40),
+
+        /// Animation
+        Lottie.asset(animation, height: height),
+
+        const SizedBox(height: 20),
+
+        /// Title
+        Text(
+          title,
+          style: text16(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        const SizedBox(height: 6),
+
+        /// Subtitle
+        Text(
+          subtitle,
+          textAlign: TextAlign.center,
+          style: text12(color: AppColors.textSecondary),
+        ),
+
+        const SizedBox(height: 20),
+
+        /// Button (optional)
+        if (onTap != null)
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.buttonPrimary,
+            ),
+            onPressed: onTap,
+            child: Text(buttonText, style: text14()),
+          ),
+      ],
+    );
+  }
+}
 
 Widget statusBar(MainAxisAlignment place, String? status) {
   Color getStatusColor(String status) {

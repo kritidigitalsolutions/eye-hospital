@@ -43,54 +43,50 @@ class MyAppointmentsPage extends StatelessWidget {
 
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Obx(
-                    () => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        filterChip("all", ctr.totalCount),
-                        filterChip("cancelled", ctr.countByStatus("cancelled")),
-                        filterChip("confirmed", ctr.countByStatus("confirmed")),
-                        filterChip("pending", ctr.countByStatus("pending")),
-                        filterChip("completed", ctr.countByStatus("completed")),
-                      ],
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      filterChip("all", ctr.totalCount),
+                      filterChip("cancelled", ctr.countByStatus("cancelled")),
+                      filterChip("confirmed", ctr.countByStatus("confirmed")),
+                      filterChip("pending", ctr.countByStatus("pending")),
+                      filterChip("completed", ctr.countByStatus("completed")),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 12),
 
-                Expanded(
-                  child: Obx(() {
-                    final response = ctr.myAppointment.value;
+                Obx(() {
+                  final response = ctr.myAppointment.value;
 
-                    switch (response.status) {
-                      case Status.loading:
-                        return buildShimmerList();
+                  switch (response.status) {
+                    case Status.loading:
+                      return buildShimmerList();
 
-                      case Status.error:
-                        return Center(
-                          child: Text(
-                            response.message ?? "Something went wrong",
-                          ),
+                    case Status.error:
+                      return Center(
+                        child: Text(response.message ?? "Something went wrong"),
+                      );
+
+                    case Status.completed:
+                      final appointments = ctr.filteredAppointments;
+
+                      if (appointments.isEmpty) {
+                        return const Center(
+                          child: Text("No appointments found"),
                         );
+                      }
 
-                      case Status.completed:
-                        final appointments = ctr.filteredAppointments;
-
-                        if (appointments.isEmpty) {
-                          return const Center(
-                            child: Text("No appointments found"),
-                          );
-                        }
-
-                        return ListView.builder(
+                      return Expanded(
+                        child: ListView.builder(
                           itemCount: appointments.length,
                           itemBuilder: (context, index) {
                             return appointmentCard(appointments[index]);
                           },
-                        );
-                    }
-                  }),
-                ),
+                        ),
+                      );
+                  }
+                }),
               ],
             ),
           ),

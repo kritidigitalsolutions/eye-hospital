@@ -1,6 +1,9 @@
 import 'package:eye_hospital/res/app_colors.dart';
+import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/routes/app_routes.dart';
+import 'package:eye_hospital/utils/home_components.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
+import 'package:eye_hospital/views/shimmer_widget/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../view_model/after_login_controller/shop_controller/checkout_controller.dart';
@@ -50,21 +53,43 @@ class TrackingDetailsPage extends StatelessWidget {
               Expanded(
                 child: Obx(() {
                   if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return buildShimmerList();
                   }
 
                   if (controller.orders.isEmpty) {
-                    return const Center(child: Text("No Orders Found"));
+                    return Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () => controller.fetchOrders(),
+                        child: ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            EmptyStateWidget(
+                              animation: AppImages.order,
+                              title: "No Order found Yet",
+                              subtitle:
+                                  "Your orders will appear here.\nExplore products and place your first order.",
+                              buttonText: "Start Shopping",
+                              onTap: () => Get.toNamed(AppRoutes.productPage),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   }
 
-                  return ListView.builder(
-                    itemCount: controller.orders.length,
-                    itemBuilder: (context, index) {
-                      final order = controller.orders[index];
-                      final item = order.items.first;
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => controller.fetchOrders(),
+                      child: ListView.builder(
+                        itemCount: controller.orders.length,
+                        itemBuilder: (context, index) {
+                          final order = controller.orders[index];
+                          final item = order.items.first;
 
-                      return trackingCard(order, item);
-                    },
+                          return trackingCard(order, item);
+                        },
+                      ),
+                    ),
                   );
                 }),
               ),

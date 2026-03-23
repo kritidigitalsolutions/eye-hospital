@@ -26,12 +26,16 @@ class _TermsConditonsPageState extends State<TermsConditonsPage> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        backgroundColor: AppColors.white,
         automaticallyImplyLeading: false,
         title: Text(
           "Term & Conditions",
           style: text16(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        elevation: 1,
+        surfaceTintColor: AppColors.white,
+        shadowColor: AppColors.grey.shade100,
       ),
 
       body: Obx(() {

@@ -79,8 +79,12 @@ class DoctorRepo {
       rethrow;
     }
   }
-///  review doctor
-  Future<dynamic> submitDoctorReview(String doctorId, Map<String, dynamic> body) async {
+
+  ///  review doctor
+  Future<dynamic> submitDoctorReview(
+    String doctorId,
+    Map<String, dynamic> body,
+  ) async {
     try {
       final token = HiveService.getToken();
       _api.setToken(token ?? '');
@@ -89,6 +93,22 @@ class DoctorRepo {
       print("BODY => $body");
       final res = await _api.postApi(url, body);
       return res;
+    } catch (e) {
+      print("Submit Review Repo Error: $e");
+      rethrow;
+    }
+  }
+
+  // -------------------------------------------------
+  // Top doctor
+  // ----------------------------------------------------
+
+  Future<DoctorListResModel> topDoctor() async {
+    try {
+      final token = HiveService.getToken();
+      _api.setToken(token ?? '');
+      final res = await _api.getApi(AppUrls.topDoctor);
+      return DoctorListResModel.fromJson(res);
     } catch (e) {
       print("Submit Review Repo Error: $e");
       rethrow;

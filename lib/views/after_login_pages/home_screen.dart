@@ -236,7 +236,7 @@ class HomeScreen extends StatelessWidget {
 
                         /// Title
                         Text(
-                          "No Doctors Available",
+                          "No Spectacles Available",
                           style: text14(fontWeight: FontWeight.w600),
                         ),
 

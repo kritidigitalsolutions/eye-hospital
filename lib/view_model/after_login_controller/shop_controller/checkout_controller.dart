@@ -28,7 +28,7 @@ class CheckoutController extends GetxController {
   final promoCode = TextEditingController();
 
   // ================= UI State =================
-  RxBool saveInfo = true.obs;
+  RxBool saveInfo = false.obs;
   RxInt selectedPayment = 0.obs;
   RxInt quantity = 1.obs;
 

@@ -1,6 +1,5 @@
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_dimensions.dart';
-import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/utils/buttons.dart';
 import 'package:eye_hospital/utils/custom_textfields.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
@@ -85,42 +84,41 @@ class LoginScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    Text("Or", style: text20(fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 10),
+                    // Text("Or", style: text20(fontWeight: FontWeight.w600)),
+                    // const SizedBox(height: 10),
                     Text(
                       "Login / Signup",
                       style: text18(fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 16),
+                    //  const SizedBox(height: 16),
 
-                    SizedBox(
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusSmall,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {},
-                        icon: Image.asset(
-                          AppImages.google,
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: Text(
-                          "Login with Google",
-                          style: text14(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.buttonText,
-                          ),
-                        ),
-                      ),
-                    ),
-
+                    // SizedBox(
+                    //   width: double.infinity,
+                    //   height: 45,
+                    //   child: ElevatedButton.icon(
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: AppColors.primary,
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(
+                    //           AppDimensions.radiusSmall,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     onPressed: () {},
+                    //     icon: Image.asset(
+                    //       AppImages.google,
+                    //       width: 24,
+                    //       height: 24,
+                    //     ),
+                    //     label: Text(
+                    //       "Login with Google",
+                    //       style: text14(
+                    //         fontWeight: FontWeight.w600,
+                    //         color: AppColors.buttonText,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(height: 20),
 
                     Obx(

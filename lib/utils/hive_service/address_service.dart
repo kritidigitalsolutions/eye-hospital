@@ -6,7 +6,10 @@ class AddressService {
   /// Get all addresses
   static List<Map<String, dynamic>> getAddresses() {
     final data = box.get('addresses', defaultValue: []);
-    return List<Map<String, dynamic>>.from(data);
+
+    return (data as List)
+        .map((e) => (e as Map).cast<String, dynamic>())
+        .toList();
   }
 
   /// Save full list

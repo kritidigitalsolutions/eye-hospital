@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../view_model/after_login_controller/shop_controller/checkout_controller.dart';
 
-class TrackingDetailsPage extends StatelessWidget {
-  TrackingDetailsPage({super.key});
+class MyOrderPage extends StatelessWidget {
+  MyOrderPage({super.key});
 
   final CheckoutController controller = Get.put(CheckoutController());
 
@@ -28,12 +28,9 @@ class TrackingDetailsPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.local_shipping_outlined, size: 22),
+                  Icon(Icons.gif_box, size: 22),
                   SizedBox(width: 8),
-                  Text(
-                    "Tracking Details",
-                    style: text18(fontWeight: FontWeight.bold),
-                  ),
+                  Text("My Order", style: text18(fontWeight: FontWeight.bold)),
                 ],
               ),
 

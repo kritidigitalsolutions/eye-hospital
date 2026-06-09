@@ -33,38 +33,38 @@ class CheckoutController extends GetxController {
   RxInt quantity = 1.obs;
 
   // ================= Submit Order =================
-  Future<void> submitOrder() async {
-    try {
-      isLoading.value = true;
+  // Future<void> submitOrder() async {
+  //   try {
+  //     isLoading.value = true;
 
-      await _repo.submitOrder(
-        firstName: fullName.text,
-        lastName: lastName.text,
-        address: address.text,
-        city: city.text,
-        zip: zip.text,
-        state: state.text,
-        country: country.text,
-        phone: phone.text,
-        paymentMethod: selectedPayment.value,
-        cardNumber: cardNumber.text,
-        expiry: expiry.text,
-        cvc: cvc.text,
-        cardName: cardName.text,
-        promoCode: promoCode.text,
-        quantity: quantity.value,
-      );
+  //     await _repo.submitOrder(
+  //       firstName: fullName.text,
+  //       lastName: lastName.text,
+  //       address: address.text,
+  //       city: city.text,
+  //       zip: zip.text,
+  //       state: state.text,
+  //       country: country.text,
+  //       phone: phone.text,
+  //       paymentMethod: selectedPayment.value,
+  //       cardNumber: cardNumber.text,
+  //       expiry: expiry.text,
+  //       cvc: cvc.text,
+  //       cardName: cardName.text,
+  //       promoCode: promoCode.text,
+  //       quantity: quantity.value,
+  //     );
 
-      Get.snackbar("Success", "Order Placed Successfully");
+  //     Get.snackbar("Success", "Order Placed Successfully");
 
-      // 🔥 Refresh Orders After Order Placed
-      fetchOrders();
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     // 🔥 Refresh Orders After Order Placed
+  //     fetchOrders();
+  //   } catch (e) {
+  //     Get.snackbar("Error", e.toString());
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   // ================= Fetch Orders =================
   Future<void> fetchOrders() async {

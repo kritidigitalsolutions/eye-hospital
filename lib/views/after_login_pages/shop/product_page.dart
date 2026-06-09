@@ -202,7 +202,7 @@ class _ProductPageState extends State<ProductPage> {
                       imageUrl: item.images.isNotEmpty ? item.images.first : "",
                       fit: BoxFit.cover,
 
-                      errorWidget: (_, __, ___) => AspectRatio(
+                      errorWidget: (_, _, _) => AspectRatio(
                         aspectRatio: 1.5,
                         child: Container(
                           color: AppColors.grey.shade300,

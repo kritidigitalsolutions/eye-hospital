@@ -93,7 +93,7 @@ class _ProductReviewPageState extends State<ProductReviewPage> {
                   child: product.images.isNotEmpty
                       ? Image.network(
                           product.images.first,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.image),
+                          errorBuilder: (_, _, _) => const Icon(Icons.image),
                         )
                       : const Icon(Icons.image),
                 ),

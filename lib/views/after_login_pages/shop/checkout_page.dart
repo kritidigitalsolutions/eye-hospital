@@ -5,6 +5,7 @@ import 'package:eye_hospital/model/response/product_res/product_res_model.dart';
 import 'package:eye_hospital/res/app_colors.dart';
 import 'package:eye_hospital/res/app_images.dart';
 import 'package:eye_hospital/utils/buttons.dart';
+import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:eye_hospital/utils/hive_service/address_service.dart';
 import 'package:eye_hospital/utils/textstyle.dart';
 import 'package:eye_hospital/view_model/after_login_controller/cart_controller/cart_controller.dart';
@@ -20,7 +21,8 @@ class CheckoutPage extends StatefulWidget {
   State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
-class _CheckoutPageState extends State<CheckoutPage> {
+class _CheckoutPageState extends State<CheckoutPage>
+    with WidgetsBindingObserver {
   final CheckoutController controller = Get.put(CheckoutController());
 
   final PaymentController paymentCtr = Get.put(PaymentController());
@@ -29,13 +31,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final Map data = Get.arguments ?? {};
+  final Map<String, dynamic> data =
+      (Get.arguments as Map?)?.cast<String, dynamic>() ?? {};
 
   bool get isDirect => data["isDirect"] == true;
 
   List<CartItem>? get cartItems => data["items"];
 
-  Product get product => data["product"];
+  Product get product => data["product"] as Product;
 
   int? get index => data["index"];
 
@@ -80,10 +83,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
+  bool isPaymentStarted = false;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && isPaymentStarted) {
+      print("🔄 App Resumed");
+
+      isPaymentStarted = false; // reset flag
+
+      CustomSnakebar.error(
+        "Payment Incomplete",
+        "You exited the payment screen before completing the payment.",
+      );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     loadDefaultAddress();
   }
@@ -101,6 +120,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
       controller.zip.text = data["zip"] ?? "";
       controller.phone.text = data["phone"] ?? "";
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -163,8 +188,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   await AddressService.addAddress(newAddress);
                 }
 
+                isPaymentStarted = true;
+
                 final req = buildOrderRequest();
-                await paymentCtr.startPayment(req);
+                await paymentCtr.startPayment(
+                  req,
+                  onSuccess: () {
+                    isPaymentStarted = false; // ✅ reset
+                  },
+                  onFailure: () {
+                    isPaymentStarted = false; // ✅ reset
+                  },
+                );
               },
       ),
     );
@@ -263,20 +298,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   final selected = await Get.to(() => SelectAddressPage());
 
                   if (selected != null) {
-                    /// ✅ SET SELECTED ADDRESS
-                    controller.fullName.text = selected["fullName"] ?? "";
-                    controller.lastName.text = selected["lastName"] ?? "";
-                    controller.address.text = selected["address"] ?? "";
-                    controller.city.text = selected["city"] ?? "";
-                    controller.state.text = selected["state"] ?? "";
-                    controller.country.text = selected["country"] ?? "";
-                    controller.zip.text = selected["zip"] ?? "";
-                    controller.phone.text = selected["phone"] ?? "";
+                    final map = (selected as Map).cast<String, dynamic>();
 
-                    /// OPTIONAL: make it default
-                    await AddressService.setDefault(selected["id"]);
+                    controller.fullName.text = map["fullName"] ?? "";
+                    controller.lastName.text = map["lastName"] ?? "";
+                    controller.address.text = map["address"] ?? "";
+                    controller.city.text = map["city"] ?? "";
+                    controller.state.text = map["state"] ?? "";
+                    controller.country.text = map["country"] ?? "";
+                    controller.zip.text = map["zip"] ?? "";
+                    controller.phone.text = map["phone"] ?? "";
 
-                    setState(() {}); // refresh UI
+                    await AddressService.setDefault(map["id"]);
+
+                    setState(() {});
                   }
                 },
                 child: const Text("Change"),

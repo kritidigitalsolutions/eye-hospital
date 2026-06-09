@@ -54,7 +54,7 @@ class OnboardingScreen extends StatelessWidget {
                             Image.network(
                               list[index].image,
                               height: 300,
-                              errorBuilder: (_, __, ___) =>
+                              errorBuilder: (_, _, _) =>
                                   const Icon(Icons.image_not_supported),
                             ),
                             const SizedBox(height: 30),

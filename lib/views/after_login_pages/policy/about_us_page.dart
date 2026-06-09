@@ -154,7 +154,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                       height: 70,
                                       width: 70,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => Container(
+                                      errorBuilder: (_, _, _) => Container(
                                         height: 70,
                                         width: 70,
                                         color: Colors.grey.shade200,

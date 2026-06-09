@@ -59,7 +59,7 @@ class ProductDetailsPage extends StatelessWidget {
                         : "",
                     height: 150,
 
-                    errorWidget: (_, __, ___) =>
+                    errorWidget: (_, _, _) =>
                         const Icon(Icons.image_not_supported, size: 100),
                   ),
 

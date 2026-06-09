@@ -18,7 +18,7 @@ class OrderDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text("Order Details"),
+        title: Text("Tracking Order", style: text16()),
         elevation: 1,
         backgroundColor: AppColors.white,
         surfaceTintColor: AppColors.white,

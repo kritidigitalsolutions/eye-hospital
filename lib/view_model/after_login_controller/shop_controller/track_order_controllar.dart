@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../../model/response/track_order_res/track_order_res.dart';
+import '../../../model/response/order/track_order_res.dart';
 import '../../../repo/track_order_repo.dart';
 
 class OrderController extends GetxController {

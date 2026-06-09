@@ -11,11 +11,11 @@ import 'package:eye_hospital/views/after_login_pages/policy/policy_page.dart';
 import 'package:eye_hospital/views/after_login_pages/profile/edit_profile_Page.dart';
 import 'package:eye_hospital/views/after_login_pages/profile/my_profile_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/checkout_page.dart';
-import 'package:eye_hospital/views/after_login_pages/shop/order_details.dart';
+import 'package:eye_hospital/views/after_login_pages/shop/track_order.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_details_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_page.dart';
 import 'package:eye_hospital/views/after_login_pages/shop/product_review_page.dart';
-import 'package:eye_hospital/views/after_login_pages/shop/tracke_order_page.dart';
+import 'package:eye_hospital/views/after_login_pages/shop/my_order_page.dart';
 import 'package:eye_hospital/views/after_login_pages/support_help_page.dart';
 import 'package:eye_hospital/views/after_login_pages/policy/terms_conditons_page.dart';
 import 'package:eye_hospital/views/before_login_pages/login_screen.dart';
@@ -59,7 +59,7 @@ class AppPages {
     GetPage(name: AppRoutes.productPage, page: () => ProductPage()),
     GetPage(name: AppRoutes.productDetails, page: () => ProductDetailsPage()),
     GetPage(name: AppRoutes.checkoutPage, page: () => CheckoutPage()),
-    GetPage(name: AppRoutes.traceOrder, page: () => TrackingDetailsPage()),
+    GetPage(name: AppRoutes.traceOrder, page: () => MyOrderPage()),
     GetPage(name: AppRoutes.orderDetails, page: () => OrderDetailsPage()),
     GetPage(name: AppRoutes.supportPage, page: () => SupportHelpPage()),
     GetPage(name: AppRoutes.likeProduct, page: () => LikedProductPage()),

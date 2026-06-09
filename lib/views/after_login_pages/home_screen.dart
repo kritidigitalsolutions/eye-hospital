@@ -639,7 +639,7 @@ Widget menuIconButton(BuildContext context) {
           children: [
             const Icon(Icons.local_shipping_outlined, size: 18),
             const SizedBox(width: 8),
-            Text("Track my order", style: text14()),
+            Text("My Order", style: text14()),
           ],
         ),
       ),

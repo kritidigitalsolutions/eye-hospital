@@ -3,6 +3,7 @@ import 'package:eye_hospital/data/api_response.dart';
 import 'package:eye_hospital/model/request/checkOut_req_model/create_order_req_model.dart';
 import 'package:eye_hospital/model/response/checkout_res/create_order_res_model.dart';
 import 'package:eye_hospital/repo/payment_repo.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PaymentController extends GetxController {
@@ -13,7 +14,11 @@ class PaymentController extends GetxController {
 
   var createOrder = ApiResponse<CreateOrderResModel>.completed(null).obs;
 
-  Future<void> startPayment(CreateOrderReqModel model) async {
+  Future<void> startPayment(
+    CreateOrderReqModel model, {
+    required VoidCallback onSuccess,
+    required VoidCallback onFailure,
+  }) async {
     isLoading.value = true;
     statusMessage.value = '';
 
@@ -25,9 +30,11 @@ class PaymentController extends GetxController {
 
     if (order?.gatewayOrderId == null || order?.paymentSessionId == null) {
       isLoading.value = false;
+      onFailure();
       statusMessage.value = "Failed to create order. Please try again.";
       return;
     } else {
+      print("id-----------------===============${order?.paymentSessionId}");
       await _repo.doPayment(
         context: Get.context!, // requires GetMaterialApp
         orderId: order?.gatewayOrderId ?? '',
@@ -41,10 +48,12 @@ class PaymentController extends GetxController {
               "Payment processed (Order: $orderId)\nWe are confirming via server...";
           // TODO: Here you should call your backend to verify payment status
           // e.g. Get.snackbar("Success", "Payment initiated – awaiting confirmation");
+          onSuccess();
         },
         onFailure: (error) {
           isLoading.value = false;
           statusMessage.value = "Payment failed: $error";
+          onFailure();
           // Get.snackbar("Error", error, backgroundColor: Colors.red);
         },
       );

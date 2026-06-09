@@ -1,6 +1,6 @@
 class AppUrls {
   // static const String baseUrl = "http://192.168.29.185:7000/api";
-  static const String baseUrl = "http://192.168.1.16:7000/api";
+  static const String baseUrl = "http://192.168.1.34:7000/api";
 
   //--------------------------------------------------
   //auth

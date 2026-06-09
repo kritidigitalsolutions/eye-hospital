@@ -164,7 +164,7 @@ class LikedProductPage extends StatelessWidget {
                   ),
                   child: Image.network(
                     product!.images.isNotEmpty ? product.images.first : "",
-                    errorBuilder: (_, __, ___) => const Icon(Icons.image),
+                    errorBuilder: (_, _, _) => const Icon(Icons.image),
                   ),
                 ),
               ),

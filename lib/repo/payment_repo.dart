@@ -1,6 +1,7 @@
 // payment_repo.dart  (formerly CashfreeService / PaymentRepo)
 import 'package:eye_hospital/model/request/checkOut_req_model/create_order_req_model.dart';
 import 'package:eye_hospital/model/response/checkout_res/create_order_res_model.dart';
+import 'package:eye_hospital/utils/custom_snakebar.dart';
 import 'package:eye_hospital/utils/hive_service/hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
@@ -12,8 +13,7 @@ import 'package:eye_hospital/data/network/network_api_service.dart';
 import 'package:eye_hospital/res/app_urls.dart';
 
 class PaymentRepo {
-  static const String _environment =
-      "PRODUCTION"; // Change to "PRODUCTION" later
+  static const String _environment = "SANDBOX"; // Change to "PRODUCTION" later
 
   final _api = NetworkApiService();
 
@@ -73,10 +73,16 @@ class PaymentRepo {
       cfService.setCallback(
         (String orderId) {
           onVerifySuccess(orderId);
+          print("===========Success ==================Success==========");
         },
         (CFErrorResponse error, String? orderId) {
           final msg = error.getMessage() ?? "Payment failed";
           onFailure("$msg (Code: ${error.getCode()})");
+          CustomSnakebar.error(
+            "Payment Failed",
+            "Your payment could not be completed. Please try again.",
+          );
+          print("===========failed ==================fail==========");
         },
       );
 
